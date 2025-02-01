@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:only_shef/pages/chinese_cusine/screen/chinese_cusine_screen.dart';
+
+import 'package:only_shef/pages/cuisine/screens/cuisine_screen.dart';
+import 'package:only_shef/pages/cuisine_item_details/screens/cuisine_item_details.dart';
 import 'package:only_shef/pages/esserdesserts_cusine/screen/desserts_cusine_screen.dart';
 // import 'package:only_shef/esserdesserts_cusine/screen/desserts_cusine_Screen.dart';
 import 'package:only_shef/pages/fast_food_cusine/screen/fast_food_cusine_screen.dart';
 import 'package:only_shef/pages/mexican_cusine/screen/mexican_cusine_screen.dart';
 import 'package:only_shef/pages/home/widgets/cuisine_card.dart';
-import 'package:only_shef/pages/pakistan_cusine/screen/pakistani_cusine_screen.dart';
+
 import 'package:only_shef/pancakes_cusine/screen/pancakes_cusine_screen.dart';
 // import 'package:only_shef/pancakes_cusine/screen/pancakes_cusine_screen.dart';
-import 'package:only_shef/utils/custome_nav_bar.dart';
+import 'package:only_shef/widgets/custome_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -85,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PakistaniCuisineScreen()),
+                                builder: (context) => CuisineScreen()),
                           );
                         },
                       ),
@@ -96,7 +98,7 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChineseCuisineScreen()),
+                                builder: (context) => CuisineItemDetails()),
                           );
                         },
                       ),

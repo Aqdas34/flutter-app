@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:only_shef/pages/home/screen/home_screen.dart';
 import 'package:only_shef/services/api_service.dart';
-import 'package:only_shef/utils/snack_bar_util.dart';
+import 'package:only_shef/widgets/snack_bar_util.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

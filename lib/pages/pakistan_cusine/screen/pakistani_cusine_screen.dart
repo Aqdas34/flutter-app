@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'package:only_shef/widgets/custom_menu_button.dart';
+
 class PakistaniCuisineScreen extends StatelessWidget {
   const PakistaniCuisineScreen({super.key});
 
@@ -15,6 +16,7 @@ class PakistaniCuisineScreen extends StatelessWidget {
           onPressed: () {},
         ),
         actions: [
+          // ThreeGreenBarsScreen()
           CircleAvatar(
             backgroundImage: NetworkImage('https://via.placeholder.com/150'),
           ),
@@ -25,6 +27,7 @@ class PakistaniCuisineScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ThreeGreenBarsApp(),
             // Header Image and Title
             Stack(
               children: [
@@ -33,8 +36,8 @@ class PakistaniCuisineScreen extends StatelessWidget {
                   height: 200,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(
-                        'https://via.placeholder.com/600x200', // Replace with cuisine image
+                      image: AssetImage(
+                        'assets/pakistani1.png', // Replace with cuisine image
                       ),
                       fit: BoxFit.cover,
                     ),

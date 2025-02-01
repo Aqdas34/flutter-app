@@ -23,12 +23,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      // padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: Color(0xFF1E451B), // Dark green background
         borderRadius: BorderRadius.circular(50),
       ),
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(
@@ -72,7 +72,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           color: isSelected
               ? Colors.green[900]
               : Colors.white, // Green when selected, white otherwise
-          size: 28,
+          size: 35,
         ),
       ),
     );

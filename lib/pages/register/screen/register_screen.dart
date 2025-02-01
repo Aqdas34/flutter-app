@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:only_shef/pages/login/screen/login_screen.dart';
 import 'package:only_shef/services/api_service.dart';
-import 'package:only_shef/utils/snack_bar_util.dart';
+import 'package:only_shef/widgets/snack_bar_util.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
