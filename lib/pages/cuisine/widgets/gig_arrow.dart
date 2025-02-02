@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 class GigArrow extends StatelessWidget {
   final double angle;
-
-  const GigArrow({super.key, this.angle = 0.0});
+  final double size;
+  final Color color;
+  const GigArrow(
+      {super.key,
+      this.angle = 0.0,
+      this.size = 50,
+      this.color = Colors.transparent});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      width: 50,
+      height: size,
+      width: size,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25),
@@ -30,9 +35,8 @@ class GigArrow extends StatelessWidget {
               opacity: 1, // Modify this line to make the arrow transparent
               child: Icon(
                 Icons.arrow_outward_rounded,
-                color: Color.fromRGBO(0, 0, 0,
-                    0.5), // Modify this line to make the arrow transparent
-                size: 45,
+                color: color, // Modify this line to make the arrow transparent
+                size: size - 5,
               ),
             ),
           ),

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/cuisine/screens/cuisine_screen.dart';
-import 'package:only_shef/pages/cuisine_item_details/screens/cuisine_item_details.dart';
-import 'package:only_shef/pages/esserdesserts_cusine/screen/desserts_cusine_screen.dart';
-// import 'package:only_shef/esserdesserts_cusine/screen/desserts_cusine_Screen.dart';
-import 'package:only_shef/pages/fast_food_cusine/screen/fast_food_cusine_screen.dart';
-import 'package:only_shef/pages/mexican_cusine/screen/mexican_cusine_screen.dart';
-import 'package:only_shef/pages/home/widgets/cuisine_card.dart';
+import 'package:only_shef/pages/home/widgets/cuisine_custom_card.dart';
+import 'package:only_shef/widgets/custom_menu_button.dart';
 
-import 'package:only_shef/pancakes_cusine/screen/pancakes_cusine_screen.dart';
-// import 'package:only_shef/pancakes_cusine/screen/pancakes_cusine_screen.dart';
 import 'package:only_shef/widgets/custome_nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,135 +12,169 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
-        ),
-        actions: [
-          CircleAvatar(
-            backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-          ),
-          SizedBox(width: 16),
-        ],
-      ),
+      backgroundColor: Color(0xffFDF7F2),
       body: Stack(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ThreeGreenBarsMenu(),
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage('assets/chef_image.jpg'),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Text(
-                  "What cuisine chef would you like 2 Select?",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  "What cuisine chef\nwould you like 2 Select?",
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF1E451B),
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
+                        style: GoogleFonts.poppins(),
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[200],
                           prefixIcon: Icon(Icons.search, color: Colors.black54),
                           hintText: "Search food, chefs",
-                          hintStyle: TextStyle(color: Colors.black54),
+                          hintStyle: GoogleFonts.poppins(color: Colors.black54),
+                          labelStyle: GoogleFonts.poppins(),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(45),
+                            borderSide:
+                                BorderSide(width: 1, color: Color(0xFF1E451B)),
                           ),
                         ),
                       ),
                     ),
                     SizedBox(width: 16),
-                    CircleAvatar(
-                      backgroundColor: Colors.green,
-                      child: Icon(Icons.notifications, color: Colors.white),
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: Color(0xFF1E451B), width: 1)),
+                      // backgroundColor: Color(0xFF1E451B),
+                      child:
+                          Icon(Icons.notifications, color: Color(0xFF1E451B)),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: 10,
+                ),
                 Expanded(
                   child: GridView.count(
+                    padding: EdgeInsets.only(
+                        top: 5, bottom: 80), // Ensure no padding
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     children: [
-                      CuisineCard(
-                        color: Colors.teal,
-                        imagePath: 'assets/pakistani.png',
+                      CustomCuisineCard(
+                        cuisineName: "Pakistani",
+                        backColor: Color(0xFF1B4149),
+                        imageLink: 'assets/turkey.png',
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CuisineScreen()),
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/pakistani1.png',
+                                    cuisineName: 'Pakistani Cuisine')),
                           );
                         },
                       ),
-                      CuisineCard(
-                        color: Colors.blue,
-                        imagePath: 'assets/chinese.png',
+                      CustomCuisineCard(
+                        backColor: Color(0xFF81C0FF),
+                        imageLink: 'assets/chinese_logo.png',
+                        cuisineName: "Chinese",
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CuisineItemDetails()),
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/chinese1.png',
+                                    cuisineName: 'Chinese Cuisine')),
                           );
                         },
                       ),
-                      CuisineCard(
-                        color: Colors.red,
-                        imagePath: 'assets/mexican.png',
+                      CustomCuisineCard(
+                        backColor: Color(0xFFCA4943),
+                        imageLink: 'assets/mexican_logo.png',
+                        cuisineName: "Mexican",
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MexicanCuisineScreen()),
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/mexican1.png',
+                                    cuisineName: 'Mexican Cuisine')),
                           );
                         },
                       ),
-                      CuisineCard(
-                        color: Colors.deepPurple,
-                        imagePath: 'assets/fastfood.png',
+                      CustomCuisineCard(
+                        backColor: Color(0xFF8186D9),
+                        imageLink: 'assets/fastfood_logo.png',
+                        cuisineName: "Fast Food",
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FastFoodScreen()),
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/fastfood1.png',
+                                    cuisineName: 'Fast Foods')),
                           );
                         },
                       ),
-                      CuisineCard(
-                        color: Colors.orange,
-                        imagePath:
-                            'assets/desserts.png', // Make sure to add the correct image path
+                      CustomCuisineCard(
+                        cuisineName: "Desserts",
+                        backColor: Color(0xFF77B255),
+                        imageLink:
+                            'assets/deserts_logo.png', // Make sure to add the correct image path
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    DessertsScreen()), // Update with your screen
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/desert1.png',
+                                    cuisineName:
+                                        'Dessets')), // Update with your screen
                           );
                         },
                       ),
-                      CuisineCard(
-                        color: Colors.pink,
-                        imagePath:
-                            'assets/cakes.png', // Make sure to add the correct image path
+                      CustomCuisineCard(
+                        cuisineName: "Others",
+                        backColor: Color(0xFFB769D3),
+                        imageLink:
+                            'assets/others_logo.png', // Make sure to add the correct image path
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    PancakesScreen()), // Update with your screen
+                                builder: (context) => CuisineScreen(
+                                    imagePath: 'assets/desert1.png',
+                                    cuisineName:
+                                        'Other Cuisine')), // Update with your screen
                           );
                         },
                       ),
