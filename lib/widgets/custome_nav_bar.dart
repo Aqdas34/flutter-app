@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:only_shef/pages/chat/screen/messages_screen.dart';
 import 'package:only_shef/pages/home/screen/home_screen.dart';
+import 'package:only_shef/pages/settings/screens/profile_setting_screen.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -14,8 +16,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   // List of icons and corresponding screens
   final List<Map<String, dynamic>> _navItems = [
     {'icon': Icons.home, 'screen': HomeScreen()},
-    {'icon': Icons.settings, 'screen': HomeScreen()},
-    {'icon': Icons.message, 'screen': HomeScreen()},
+    {'icon': Icons.settings, 'screen': ProfileSettingScreen()},
+    {'icon': Icons.message, 'screen': MessagesScreen()},
     {'icon': Icons.person, 'screen': HomeScreen()},
   ];
 
@@ -23,7 +25,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Color(0xFF1E451B), // Dark green background
         borderRadius: BorderRadius.circular(50),
@@ -57,8 +59,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         );
       },
       child: Container(
-        height: 60,
-        width: 60,
+        height: 55,
+        width: 55,
         decoration: BoxDecoration(
           color: isSelected
               ? Colors.white

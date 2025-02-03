@@ -7,7 +7,7 @@ class ThreeGreenBarsMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      width: 40,
+      width: 35,
       padding: const EdgeInsets.all(2),
       child: Center(
         child: Column(
@@ -15,15 +15,15 @@ class ThreeGreenBarsMenu extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: _buildGreenBar(20, 4),
+              child: _buildGreenBar(18, 3),
             ),
-            const SizedBox(height: 6), // Space between bars
-            _buildGreenBar(40, 4),
-            const SizedBox(height: 6), // Space between bars
+            const SizedBox(height: 5), // Space between bars
+            _buildGreenBar(30, 3.2),
+            const SizedBox(height: 5), // Space between bars
 
             Align(
               alignment: Alignment.centerLeft,
-              child: _buildGreenBar(20, 4),
+              child: _buildGreenBar(18, 3),
             ),
           ],
         ),

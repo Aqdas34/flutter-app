@@ -158,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                                 builder: (context) => CuisineScreen(
                                     imagePath: 'assets/desert1.png',
                                     cuisineName:
-                                        'Dessets')), // Update with your screen
+                                        'Desserts')), // Update with your screen
                           );
                         },
                       ),

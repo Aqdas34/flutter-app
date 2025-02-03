@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/cuisine/widgets/chef_profile.dart';
 import 'package:only_shef/pages/cuisine/widgets/gig_arrow.dart';
 
@@ -29,7 +30,12 @@ class ChefGig extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(left: 15, top: 15, child: ChefProfile()),
-          Positioned(right: 15, top: 15, child: GigArrow()),
+          Positioned(
+              right: 15,
+              top: 15,
+              child: GigArrow(
+                color: primaryColor,
+              )),
           Positioned(
             bottom: 85,
             left: 35,
