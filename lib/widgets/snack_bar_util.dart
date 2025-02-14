@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:only_shef/common/colors/colors.dart';
 
 void showError(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
@@ -13,7 +14,7 @@ void showSuccess(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      backgroundColor: Colors.green,
+      backgroundColor: primaryColor,
     ),
   );
 }

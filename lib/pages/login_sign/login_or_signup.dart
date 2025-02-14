@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:only_shef/pages/login/screen/login_screen.dart';
-import 'package:only_shef/pages/register/screen/register_screen.dart';
+import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
+import 'package:only_shef/pages/auth/register/screens/register_screen.dart';
 
 class LoginOrSignup extends StatelessWidget {
   const LoginOrSignup({super.key});
