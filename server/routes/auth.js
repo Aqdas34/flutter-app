@@ -2,6 +2,7 @@
 
 const express = require("express");
 const User = require("../models/user");
+const Chef = require("../models/chef");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const auth = require("../middleware/auth");
@@ -78,6 +79,46 @@ authRouter.get('/', auth, async (req, res) => {
     res.json({ ...user._doc, token: req.token });
 
 });
+
+authRouter.post('/api/becomeChef', auth,async (req, res) => {
+  try {
+      const { ChefID } = req.body;
+      console.log("ChefID",  req.user._id);
+
+
+      // Step 1: Find the user by ID
+      const user = await User.findById(req.user);
+      console.log("user", user);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Step 3: Check if the user is already a chef
+      const existingChef = await Chef.findOne({ChefId: user._id });
+      if (existingChef) {
+          return res.status(400).json({ message: 'User is already a chef' });
+      }
+      // Step 2: Check if the user is verified
+      if (!user.isVerified) {
+          return res.status(403).json({ message: 'User is not verified' });
+      }
+      user.type = 'chef';
+      await user.save();
+
+      // Step 4: Create a new Chef entry
+      const newChef = new Chef({ChefID: user._id
+        ,...req.body});
+      const savedChef = await newChef.save();
+
+      // Step 5: Return the saved chef
+      res.status(201).json(savedChef);
+  } catch (error) {
+      console.error('Error adding chef:', error);
+      res.status(500).json({ message: error.message });
+  }
+});
+
+
 
 
 
