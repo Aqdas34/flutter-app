@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:only_shef/pages/home/screen/home_screen.dart';
 import 'dart:async';
 import 'package:only_shef/pages/login_sign/login_or_signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,7 +11,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
@@ -27,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     // Define the sliding animation from top to center
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, -1), // Start from top
-      end: Offset(0, 0),    // End at the center
+      end: Offset(0, 0), // End at the center
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut, // Animation curve
@@ -36,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     // Define the fade-out animation
     _fadeAnimation = Tween<double>(
       begin: 1.0, // Start fully visible
-      end: 0.0,   // End fully transparent
+      end: 0.0, // End fully transparent
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut, // Animation curve
@@ -50,13 +53,42 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       _controller.reverse(); // Start fade-out after the slide is done
     });
 
+    navigateUser();
     // Navigate to the home screen after the fade-out completes
-    Timer(Duration(seconds: 4), () {
-      Navigator.pushReplacement(
+    // Timer(Duration(seconds: 4), () {
+
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => LoginOrSignup()),
+    //   );
+    // });
+  }
+
+  // Asynchronous function for navigation logic
+  void navigateUser() async {
+    await Future.delayed(Duration(seconds: 4)); // Wait for 4 seconds
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('x-auth-token');
+
+    // Check if token exists
+    if (token != null && token.isNotEmpty) {
+      // If token exists, navigate to HomeScreen
+      Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false, // This line removes all previous routes
+      );
+    } else {
+      // If no token, navigate to LoginOrSignup screen
+      Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => LoginOrSignup()),
+        (route) => false, // This line removes all previous routes
       );
-    });
+    }
   }
 
   @override

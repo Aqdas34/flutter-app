@@ -47,6 +47,11 @@ class AuthService {
             //     .setUser(response.body);
             // await prefs.setString(
             //     'x-auth-token', jsonDecode(response.body)['token']);
+
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                'x-auth-token', jsonDecode(response.body)['token']);
+
             showSuccess(context, 'Account Created -  You are Logged in');
 
             Navigator.pushAndRemoveUntil(
@@ -80,6 +85,10 @@ class AuthService {
             //     .setUser(response.body);
             // await prefs.setString(
             //     'x-auth-token', jsonDecode(response.body)['token']);
+
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString(
+                'x-auth-token', jsonDecode(response.body)['token']);
             showSuccess(context, 'Account Loggeed In${response.body[3]}');
 
             // showSnackBar(context, prefs.getString('x-auth-token')!);
