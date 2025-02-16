@@ -20,8 +20,6 @@ class ChefGigServices {
     try {
       cuisineDetails = cuisineDetails.replaceFirst(" Cuisine", "");
 
-      print(cuisineDetails);
-
       // Construct URL with query parameter
       final uri_1 = Uri.parse('$uri/api/listBySpeciality').replace(
         queryParameters: {'speciality': cuisineDetails},
@@ -34,7 +32,7 @@ class ChefGigServices {
           'x-auth-token': user.token,
         },
       );
-      print(response.body);
+
       List<Chef> chefProfiles = [];
       httpErrorHandling(
         response: response,
@@ -43,6 +41,9 @@ class ChefGigServices {
         onSuccess: () {
           final List<dynamic> jsonData = jsonDecode(response.body);
           chefProfiles = jsonData.map((json) => Chef.fromJson(json)).toList();
+          chefProfiles.forEach((element) {
+            print(element.backgroundImage);
+          });
 
           // print(chefProfiles[0].name);
           // Handle the response here (e.g., parse JSON or update state)
@@ -54,7 +55,7 @@ class ChefGigServices {
 
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching chef profiles')),
+        SnackBar(content: Text('No Chef Found')),
       );
     }
     return [];

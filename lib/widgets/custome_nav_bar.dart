@@ -21,7 +21,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     {'icon': Icons.home, 'screen': HomeScreen()},
     {'icon': Icons.settings, 'screen': ProfileSettingsScreen()},
     {'icon': Icons.message, 'screen': MessagesScreen()},
-    {'icon': Icons.person, 'screen': LoginScreen()},
+    {'icon': Icons.person, 'screen': ProfileSettingsScreen()},
   ];
 
   @override
@@ -49,6 +49,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
     return GestureDetector(
       onTap: () {
+        if (_selectedIndex == index) {
+          return; // Do nothing if the selected index is the same as the current index
+        }
         setState(() {
           _selectedIndex = index; // Update the selected index
         });

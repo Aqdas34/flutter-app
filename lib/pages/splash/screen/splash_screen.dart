@@ -75,23 +75,24 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Check if token exists
     if (token != null && token.isNotEmpty) {
-      // ignore: use_build_context_synchronously
-      services.getUserData(token, context);
-      // If token exists, navigate to HomeScreen
-      Navigator.pushAndRemoveUntil(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-        (route) => false, // This line removes all previous routes
-      );
+      if (mounted) {
+        await services.getUserData(token, context);
+        // If token exists, navigate to HomeScreen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (route) => false, // This line removes all previous routes
+        );
+      }
     } else {
-      // If no token, navigate to LoginOrSignup screen
-      Navigator.pushAndRemoveUntil(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => LoginOrSignup()),
-        (route) => false, // This line removes all previous routes
-      );
+      if (mounted) {
+        // If no token, navigate to LoginOrSignup screen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginOrSignup()),
+          (route) => false, // This line removes all previous routes
+        );
+      }
     }
   }
 

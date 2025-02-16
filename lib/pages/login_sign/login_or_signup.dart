@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
 import 'package:only_shef/pages/auth/register/screens/register_screen.dart';
 
@@ -10,13 +12,15 @@ class LoginOrSignup extends StatelessWidget {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const LoginScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           // Slide, fade, and scale transitions
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
           var offsetAnimation = animation.drive(tween);
 
           var fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(animation);
@@ -39,13 +43,15 @@ class LoginOrSignup extends StatelessWidget {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const RegisterScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const RegisterScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           // Slide, fade, and scale transitions
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
           var offsetAnimation = animation.drive(tween);
 
           var fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(animation);
@@ -63,12 +69,10 @@ class LoginOrSignup extends StatelessWidget {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFC1BFC1), // Light background color
+      backgroundColor: backgroundColor, // Light background color
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -88,7 +92,7 @@ class LoginOrSignup extends StatelessWidget {
                         height: 86.78,
                         width: 374.8,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E451B), // Dark green color
+                          color: primaryColor, // Dark green color
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
@@ -96,10 +100,10 @@ class LoginOrSignup extends StatelessWidget {
                   ),
                   // Chef image
                   Align(
-                    alignment: Alignment.center,
+                    alignment: Alignment.bottomCenter,
                     child: Image.asset(
                       'assets/chef.png', // Your chef image path
-                      height: 250,
+                      height: 260,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -113,70 +117,80 @@ class LoginOrSignup extends StatelessWidget {
                   height: 86.78,
                   width: 297,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFC3DEA9), // Light green color
+                    color: secondryColor, // Light green color
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
-              const SizedBox(height: 40), // Add some spacing
+              const SizedBox(height: 80), // Add some spacing
               // Text content
-              Column(
-                children: [
-                  const Text(
-                    "Get Started",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Empowering chefs to craft\nunforgettable culinary experiences.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  // Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () =>_navigateToRegisterPage(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFC3DEA9), // Light green button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 30),
-                        ),
-                        child: const Text(
-                          "Register",
-                          style: TextStyle(color: Colors.black),
-                        ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Get Started",
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        color: Colors.black54,
                       ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () =>  _navigateToLoginPage(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1E451B), // Dark green button
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 30),
-                        ),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Empowering chefs to craft\nunforgettable culinary experiences.",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 30),
+                    // Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => _navigateToRegisterPage(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFFC3DEA9), // Light green button
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(13), // Reduced radius
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15,
+                                horizontal: 55), // Increased width
+                          ),
+                          child: const Text(
+                            "Register",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () => _navigateToLoginPage(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFF1E451B), // Dark green button
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(13), // Reduced radius
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15,
+                                horizontal: 60), // Increased width
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

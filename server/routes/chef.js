@@ -62,5 +62,10 @@ router.get('/api/listChefCuisines', auth, async (req, res) => {
 });
 
 
+router.get("/test", (req, res) => {
+    res.send("Chef route works");
+});
+
+
 
 module.exports = router;

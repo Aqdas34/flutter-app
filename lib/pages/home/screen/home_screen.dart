@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).user;
-    ;
+
     return Scaffold(
       backgroundColor: Color(0xffFDF7F2),
       body: Stack(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:only_shef/pages/login_sign/login_or_signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../common/colors/colors.dart';
 
@@ -194,8 +196,17 @@ void showLogoutDialog(BuildContext context) {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async{
                   Navigator.pop(context);
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.remove('x-auth-token');
+                  Navigator.pushAndRemoveUntil(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginOrSignup()),
+                    (route) => false,
+                  );
+
                   // Add your logout logic here
                 },
                 child: Text(

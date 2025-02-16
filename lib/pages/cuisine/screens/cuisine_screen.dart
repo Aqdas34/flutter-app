@@ -246,7 +246,8 @@ class _CuisineScreenState extends State<CuisineScreen> {
                         rating: 4,
                         cuisineName: cuisines[index].name,
                         imageUrl: cuisines[index].imageUrl,
-                        location: chefs[currentChefIndes].address,
+                        location:
+                            chefs[currentChefIndes].address.split(' ').first,
                         totalOrders: 500,
                         cuisineType: cuisines[index].cuisineType,
                       ),

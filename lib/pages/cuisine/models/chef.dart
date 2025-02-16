@@ -59,8 +59,8 @@ class Chef {
       address: json['address'],
       type: json['type'],
       isVerified: json['isVerified'],
-      backgroundImage: json['backgroundImage'] ?? "",
-      gigImage: json['gigImage'] ?? "",
+      backgroundImage: json['BackgroundImage'] ?? "",
+      gigImage: json['GigImage'] ?? "",
       username: json['username'] ?? "",
     );
   }
@@ -83,8 +83,8 @@ class Chef {
       'address': address,
       'type': type,
       'isVerified': isVerified,
-      'gigImage': gigImage,
-      'backgroundImage': backgroundImage,
+      'GigImage': gigImage,
+      'BackgroundImage': backgroundImage,
       'username': username,
     };
   }

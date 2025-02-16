@@ -24,14 +24,16 @@ class SplashServices {
           'x-auth-token': token,
         },
       );
+      print(response.statusCode);
 
       httpErrorHandling(
         response: response,
-        // ignore: use_build_context_synchronously
         context: context,
         onSuccess: () {
           Provider.of<UserProvider>(context, listen: false)
               .setUser(response.body);
+
+          print(Provider.of<UserProvider>(context, listen: false).user.name);
 
           // print(chefProfiles[0].name);
           // Handle the response here (e.g., parse JSON or update state)

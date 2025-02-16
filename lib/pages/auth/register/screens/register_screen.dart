@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
 import 'package:only_shef/pages/auth/service/register_service.dart';
 import 'package:only_shef/services/api_service.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
+
+import '../../../../common/colors/colors.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -98,122 +101,177 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFEF8F4), // Light background color
+      backgroundColor: backgroundColor, // Light background color
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 30),
             // Logo Section
-            Column(
-              children: [
-                Image.asset(
-                  'assets/logo.png', // Replace with your logo image path
-                  height: 200,
-                ),
-              ],
+            Image.asset(
+              'assets/logo.png', // Replace with your logo image path
+              height: 230,
             ),
-            const SizedBox(height: 10),
+
             // Title
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Let’s Get Started",
-                style: TextStyle(
-                  fontSize: 22,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                  color: primaryColor,
                 ),
               ),
             ),
-            const SizedBox(height: 5),
-            const Align(
+            const SizedBox(height: 1),
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Create your own account",
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 16,
-                  color: Colors.black54,
+                  color: Color(0xFF355B34),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             // Name Input
-            TextFormField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                hintText: "eg. Junaid Rafiq",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.black26),
+            SizedBox(
+              height: 55, // Adjust the height as needed
+              child: TextFormField(
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  hintText: "eg. Junaid Rafiq",
+                  labelStyle:
+                      GoogleFonts.poppins(fontSize: 14, color: primaryColor),
+                  hintStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: Color(0xFFBABABA)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             // Email Input
-            TextFormField(
-              controller: _emailController,
-              // initialValue: "creativejunaid007@gmail.com",
-              decoration: InputDecoration(
-                hintText: "Email",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.black26),
+            SizedBox(
+              height: 55, // Adjust the height as needed
+              child: TextFormField(
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                controller: _emailController,
+                decoration: InputDecoration(
+                  hintText: "Email",
+                  labelStyle:
+                      GoogleFonts.poppins(fontSize: 14, color: primaryColor),
+                  hintStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: Color(0xFFBABABA)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: secondryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             // Password Input
-            TextFormField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: "Password",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.black26),
+            SizedBox(
+              height: 55, // Adjust the height as needed
+              child: TextFormField(
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  labelStyle:
+                      GoogleFonts.poppins(fontSize: 14, color: primaryColor),
+                  hintStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: Color(0xFFBABABA)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             // Confirm Password Input
-            TextFormField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: "Confirm Password",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.black26),
+            SizedBox(
+              height: 55, // Adjust the height as needed
+              child: TextFormField(
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: "Confirm Password",
+                  labelStyle:
+                      GoogleFonts.poppins(fontSize: 14, color: primaryColor),
+                  hintStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: Color(0xFFBABABA)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: primaryColor, width: 2),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+
             // Terms and Conditions
             Row(
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Checkbox(
-                  value: _termsAccepted,
-                  onChanged: (value) {
-                    setState(() {
-                      _termsAccepted = value!;
-                    });
-                    // Handle checkbox logic
-                  },
+                Padding(
+                  padding: EdgeInsets.zero,
+                  child: Checkbox(
+                    value: _termsAccepted,
+                    onChanged: (value) {
+                      setState(() {
+                        _termsAccepted = value!;
+                      });
+                      // Handle checkbox logic
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    activeColor:
+                        primaryColor, // Set the active color to primaryColor
+                  ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text: "I agree to the ",
-                          style: TextStyle(color: Colors.black54),
+                          style: GoogleFonts.poppins(color: Colors.black54),
                         ),
                         TextSpan(
                           text: "Terms and Conditions",
-                          style: TextStyle(
-                            color: Colors.blue,
+                          style: GoogleFonts.poppins(
+                            color: primaryColor,
                             fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            decorationThickness:
+                                0.7, // Adjust thickness as needed
+                            decorationStyle: TextDecorationStyle.solid,
+                            decorationColor: primaryColor,
                           ),
                         ),
                       ],
@@ -222,17 +280,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
             // Signup Button
             ElevatedButton(
               onPressed: _isLoading ? null : _register,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50), // Dark green color
+                backgroundColor: primaryColor, // Dark green color
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(5),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                ),
+                minimumSize: Size(MediaQuery.of(context).size.width * 0.9,
+                    50), // Set width to 80% of screen width
               ),
               child: const Text(
                 "SignUp",
