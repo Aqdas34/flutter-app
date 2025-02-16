@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChefProfile extends StatelessWidget {
-  const ChefProfile({super.key});
+  const ChefProfile({super.key, required this.chefName, required this.chefImage, required this.chefUsername});
+   final String chefName ;
+   final  String chefImage;
+   final  String chefUsername ;
 
   @override
   Widget build(BuildContext context) {
-    String chefName = "Alex Bhatti";
-    String chefImage = "https://i.ibb.co/KxN7fbNM/Ellipse-4.png";
-    String chefUsername = "alex.b";
 
     return Container(
       width: 190,

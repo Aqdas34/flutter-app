@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../cuisine/models/chef.dart';
+
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({super.key, required this.chef});
+  final Chef chef;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -28,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Color(0xFFFDF7F2),
       appBar: AppBar(
         title: Text(
-          'chef_ibad',
+          widget.chef.username,
           style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         backgroundColor: Color(0xFFFDF7F2),

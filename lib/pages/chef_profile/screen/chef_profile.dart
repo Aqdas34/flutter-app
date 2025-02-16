@@ -3,16 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/chef_profile/screen/review_card.dart';
 import 'package:only_shef/pages/chef_profile/widgets/profile_header.dart';
 
-class ChefProfileScreen extends StatelessWidget {
-  final Map<String, dynamic> chefProfile = {
-    "name": "Chris Bale",
-    "username": "@bale.chris",
-    "bio": "I'm delighted to introduce myself as a professional chef",
-    "rating": 5,
-    "image": "assets/chef_image.jpg",
-    "tags": ["Hot n Spicy", "Chinese"],
-  };
+import '../../cuisine/models/chef.dart';
 
+class ChefProfileScreen extends StatelessWidget {
   final List<Map<String, dynamic>> allReviews = [
     {
       "name": "Mahad Masih",
@@ -32,7 +25,9 @@ class ChefProfileScreen extends StatelessWidget {
     },
   ];
 
-  ChefProfileScreen({super.key});
+  ChefProfileScreen({super.key, required this.chef});
+
+  final Chef chef;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +39,13 @@ class ChefProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               ProfileHeader(
-                name: chefProfile["name"],
-                username: chefProfile["username"],
-                bio: chefProfile["bio"],
-                rating: chefProfile["rating"],
-                image: chefProfile["image"],
-                tags: chefProfile["tags"],
+                chef: chef,
+                name: chef.name,
+                username: chef.username,
+                bio: chef.bio,
+                rating: chef.rating.toInt(),
+                image: chef.profileImage,
+                tags: chef.specialties,
               ),
               Container(
                 color: Colors.white,

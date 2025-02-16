@@ -48,6 +48,9 @@ class AuthService {
             // await prefs.setString(
             //     'x-auth-token', jsonDecode(response.body)['token']);
 
+            Provider.of<UserProvider>(context, listen: false)
+                .setUser(response.body);
+
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
@@ -86,10 +89,14 @@ class AuthService {
             // await prefs.setString(
             //     'x-auth-token', jsonDecode(response.body)['token']);
 
+            Provider.of<UserProvider>(context, listen: false)
+                .setUser(response.body);
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
-            showSuccess(context, 'Account Loggeed In${response.body[3]}');
+
+            String value = Provider.of<UserProvider>(context, listen: false).user.token;
+            showSuccess(context, 'Account Loggeed In $value');
 
             // showSnackBar(context, prefs.getString('x-auth-token')!);
             Navigator.pushAndRemoveUntil(

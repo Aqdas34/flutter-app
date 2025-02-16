@@ -8,7 +8,8 @@ class User {
   final String address;
   final String type;
   final String token;
-
+  final bool isVerified;
+  final String profileImage;
 
   User({
     required this.id,
@@ -18,7 +19,8 @@ class User {
     required this.address,
     required this.type,
     required this.token,
-
+   this.isVerified = false,
+     this.profileImage = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -30,7 +32,8 @@ class User {
       'address': address,
       'type': type,
       'token': token,
-
+      'isVerified': isVerified,
+      'profileImage': profileImage,
     };
   }
 
@@ -43,7 +46,8 @@ class User {
       address: map['address'] ?? '',
       type: map['type'] ?? '',
       token: map['token'] ?? '',
-     
+      isVerified: map['isVerified'] ?? false,
+      profileImage: map['profileImage'] ?? '',
     );
   }
 
@@ -59,7 +63,8 @@ class User {
     String? address,
     String? type,
     String? token,
-    List<dynamic>? cart,
+    bool? isVerified,
+    String? profileImage,
   }) {
     return User(
       id: id ?? this.id,
@@ -69,7 +74,8 @@ class User {
       address: address ?? this.address,
       type: type ?? this.type,
       token: token ?? this.token,
-      
+      isVerified: isVerified ?? this.isVerified,
+      profileImage: profileImage ?? this.profileImage,
     );
   }
 }

@@ -4,14 +4,15 @@ import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/cuisine/widgets/chef_profile.dart';
 import 'package:only_shef/pages/cuisine/widgets/gig_arrow.dart';
 
-class ChefGig extends StatelessWidget {
-  ChefGig({super.key});
+import '../models/chef.dart';
 
-  final List<String> hashtags = ["#Pakistani", "#Cuisine", "#Chef"];
+class ChefGig extends StatelessWidget {
+  const ChefGig({super.key, required this.chef});
+  final Chef chef;
 
   @override
   Widget build(BuildContext context) {
-    int rating = 3;
+    int rating = chef.rating.toInt();
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: 20,
@@ -22,14 +23,20 @@ class ChefGig extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.cyan,
         borderRadius: BorderRadius.circular(40),
-        // image: DecorationImage(
-        //   image: AssetImage('assets/pakistani1.png'),
-        //   fit: BoxFit.cover,
-        // ),
+        image: DecorationImage(
+          image: NetworkImage(chef.gigImage),
+          fit: BoxFit.cover,
+        ),
       ),
       child: Stack(
         children: [
-          Positioned(left: 15, top: 15, child: ChefProfile()),
+          Positioned(
+              left: 15,
+              top: 15,
+              child: ChefProfile(
+                  chefName: chef.name,
+                  chefImage: chef.profileImage,
+                  chefUsername: chef.username)),
           Positioned(
               right: 15,
               top: 15,
@@ -93,7 +100,7 @@ class ChefGig extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        "I am Pakistani Cuisine chef specializing in authentic dishes bringing the taste of Pakistan to every bite.",
+                        chef.bio,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 11,

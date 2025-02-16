@@ -107,14 +107,14 @@ class HomeScreen extends StatelessWidget {
                       CustomCuisineCard(
                         backColor: Color(0xFF81C0FF),
                         imageLink: 'assets/chinese_logo.png',
-                        cuisineName: "Chinese",
+                        cuisineName: "Chineese",
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CuisineScreen(
                                     imagePath: 'assets/chinese1.png',
-                                    cuisineName: 'Chinese Cuisine')),
+                                    cuisineName: 'Chineese Cuisine')),
                           );
                         },
                       ),
@@ -142,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => CuisineScreen(
                                     imagePath: 'assets/fastfood1.png',
-                                    cuisineName: 'Fast Foods')),
+                                    cuisineName: 'Fast Food')),
                           );
                         },
                       ),

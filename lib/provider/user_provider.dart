@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/user.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -11,6 +10,8 @@ class UserProvider extends ChangeNotifier {
     address: '',
     type: '',
     token: '',
+    isVerified: false,
+    profileImage: '',
   );
 
   User get user => _user;

@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_text/circular_text/model.dart';
 import 'package:flutter_circular_text/circular_text/widget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:only_shef/common/constants/show_snack_bar.dart';
 import 'package:only_shef/pages/chef_profile/screen/chef_profile.dart';
+import 'package:only_shef/pages/cuisine/models/cuisines.dart';
+import 'package:only_shef/pages/cuisine/services/chef_gig_services.dart';
 import 'package:only_shef/pages/cuisine/widgets/chef_gig.dart';
 import 'package:only_shef/pages/cuisine/widgets/cuisine_widget.dart';
 import 'package:only_shef/pages/cuisine_item_details/screens/cuisine_item_details.dart';
 import 'package:only_shef/widgets/custom_menu_button.dart';
+
+import '../../../common/colors/colors.dart';
+import '../models/chef.dart';
 
 class CuisineScreen extends StatefulWidget {
   final String imagePath;
@@ -22,6 +28,22 @@ final List<String> chef = ["ibad", "ali", "ahmed"];
 
 class _CuisineScreenState extends State<CuisineScreen> {
   int _selectedType = 0;
+  ChefGigServices chefGigServices = ChefGigServices();
+  List<Chef> chefs = [];
+  List<Cuisine> cuisines = [];
+  int currentChefIndes = 0;
+  bool cuisineShowable = false;
+
+  void fetchData() async {
+    chefs = await chefGigServices.getChefProfiles(context, widget.cuisineName);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,21 +146,22 @@ class _CuisineScreenState extends State<CuisineScreen> {
                 ),
               ),
               SizedBox(width: 30),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _selectedType = 1;
-                  });
-                },
-                child: Text(
-                  "Cuisines",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 30, 69, 27),
-                    fontWeight: FontWeight.w600,
+              if (cuisineShowable == true)
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedType = 1;
+                    });
+                  },
+                  child: Text(
+                    "Cuisines",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Color.fromARGB(255, 30, 69, 27),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           SizedBox(height: 5),
@@ -159,7 +182,9 @@ class _CuisineScreenState extends State<CuisineScreen> {
                 width: 90,
                 decoration: BoxDecoration(
                   color: _selectedType == 0
-                      ? Color.fromARGB(55, 30, 69, 27)
+                      ? cuisineShowable
+                          ? Color.fromARGB(55, 30, 69, 27)
+                          : Color(0xFF1E451B)
                       : Color(0xFF1E451B),
                 ),
               ),
@@ -168,19 +193,43 @@ class _CuisineScreenState extends State<CuisineScreen> {
           SizedBox(height: 5),
           Expanded(
             child: _selectedType == 0
-                ? ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChefProfileScreen()));
-                      },
-                      child: ChefGig(),
-                    ),
-                    itemCount: chef.length,
-                  )
+                ? chefs.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No chef is available',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            color: primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index) => InkWell(
+                          onLongPress: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChefProfileScreen(
+                                          chef: chefs[index],
+                                        )));
+                          },
+                          onTap: () async {
+                            cuisines = await chefGigServices.getChefCuisine(
+                                context, chefs[index].id);
+                            setState(() {
+                              cuisineShowable = true;
+                              _selectedType = 1;
+                              currentChefIndes = index;
+                            });
+                          },
+                          child: ChefGig(
+                            chef: chefs[index],
+                          ),
+                        ),
+                        itemCount: chefs.length,
+                      )
                 : ListView.builder(
                     padding: EdgeInsets.zero,
                     itemBuilder: (context, index) => InkWell(
@@ -188,17 +237,21 @@ class _CuisineScreenState extends State<CuisineScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CuisineItemDetails()));
+                                builder: (context) => CuisineItemDetails(
+                                      cuisine: cuisines[index],
+                                      chef: chefs[currentChefIndes],
+                                    )));
                       },
                       child: SingleCuisineWidget(
-                          rating: 4,
-                          cuisineName: "Chicken Biryani",
-                          imageUrl: "assets/pakistani.png",
-                          location: "Lahore",
-                          totalOrders: 500,
-                          cuisineType: "Pakistni"),
+                        rating: 4,
+                        cuisineName: cuisines[index].name,
+                        imageUrl: cuisines[index].imageUrl,
+                        location: chefs[currentChefIndes].address,
+                        totalOrders: 500,
+                        cuisineType: cuisines[index].cuisineType,
+                      ),
                     ),
-                    itemCount: 7,
+                    itemCount: cuisines.length,
                   ),
           ),
         ],

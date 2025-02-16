@@ -4,10 +4,14 @@ import 'package:only_shef/pages/cuisine_item_details/widgets/Tags_Widget.dart';
 import 'package:only_shef/pages/cuisine_item_details/widgets/hexagon_icon.dart';
 
 import '../../chat/screen/chat_screen.dart';
+import '../../cuisine/models/chef.dart';
+import '../../cuisine/models/cuisines.dart';
 
 class CuisineItemDetails extends StatelessWidget {
-  const CuisineItemDetails({super.key});
-
+  const CuisineItemDetails(
+      {super.key, required this.cuisine, required this.chef});
+  final Cuisine cuisine;
+  final Chef chef;
   final String chefName = "Alex Bhatti";
   final String chuisineName = "Chicken Biryani";
   final bool isChefAvaiblable = true;
@@ -31,7 +35,7 @@ class CuisineItemDetails extends StatelessWidget {
                 ),
                 color: Colors.green,
                 image: DecorationImage(
-                  image: NetworkImage("https://i.ibb.co/C3vh2Yvw/image-6.png"),
+                  image: NetworkImage(cuisine.imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -44,7 +48,7 @@ class CuisineItemDetails extends StatelessWidget {
               alignment: Alignment.center,
               width: double.infinity,
               child: Text(
-                chuisineName,
+                cuisine.name,
                 style: GoogleFonts.poppins(
                   fontSize: 25,
                   fontWeight: FontWeight.w800,
@@ -69,7 +73,7 @@ class CuisineItemDetails extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 30),
-              child: TagsWidget(value: "Pakistani"),
+              child: TagsWidget(value: cuisine.cuisineType),
             ),
             SizedBox(
               height: 10,
@@ -78,7 +82,7 @@ class CuisineItemDetails extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 30),
               alignment: Alignment.centerLeft,
               child: Text(
-                "Event Type",
+                "Ingredients",
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -97,9 +101,10 @@ class CuisineItemDetails extends StatelessWidget {
                   child: Wrap(
                     spacing: 10, // Add spacing between tags
                     children: [
-                      TagsWidget(value: "Wedding"),
-                      TagsWidget(value: "Naming"),
-                      TagsWidget(value: "Gathering"),
+                      for (int i = 0;
+                          i < cuisine.ingredients.length && i < 3;
+                          i++)
+                        TagsWidget(value: cuisine.ingredients[i]),
                     ],
                   ),
                 ),
@@ -125,10 +130,10 @@ class CuisineItemDetails extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            isChefAvaiblable
+                            chef.availabilityStatus == "true"
                                 ? Colors.teal.shade700
                                 : Colors.red.shade700, // Darker red
-                            isChefAvaiblable
+                            chef.availabilityStatus == "true"
                                 ? Colors.green
                                 : Colors.red, // Base red
                             Colors.white38, // Shiny effect
@@ -151,8 +156,8 @@ class CuisineItemDetails extends StatelessWidget {
                   SizedBox(width: 16), // Spacing between the icon and the text
                   Expanded(
                     child: Text(
-                      isChefAvaiblable
-                          ? 'Congratulations, the Chef is available. Chef Kasie is usually fully booked.'
+                      chef.availabilityStatus == "true"
+                          ? 'Congratulations, the Chef is available. Chef ${chef.name} is usually fully booked.'
                           : 'Sadly, The Chef is all Booked , You can hire him Later',
                       style: GoogleFonts.poppins(
                         fontSize: 13,
@@ -173,7 +178,7 @@ class CuisineItemDetails extends StatelessWidget {
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Get in touch with chef $chefName and discuss the details of your event and the requirements you have, and you will get a quote that fits your budget",
+                cuisine.description,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
                   fontSize: 13,
@@ -289,7 +294,7 @@ class CuisineItemDetails extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "RS 10,000.00",
+                    "RS ${cuisine.price}",
                     style: GoogleFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
@@ -307,7 +312,8 @@ class CuisineItemDetails extends StatelessWidget {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ChatScreen())),
+                                  builder: (context) =>
+                                      ChatScreen(chef: chef))),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),

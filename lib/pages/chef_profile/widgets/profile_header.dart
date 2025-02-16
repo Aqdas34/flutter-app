@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../chat/screen/chat_screen.dart';
+import '../../cuisine/models/chef.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -10,6 +11,7 @@ class ProfileHeader extends StatelessWidget {
   final int rating;
   final String image;
   final List<String> tags;
+  final Chef chef;
 
   const ProfileHeader({
     super.key,
@@ -19,6 +21,7 @@ class ProfileHeader extends StatelessWidget {
     required this.rating,
     required this.image,
     required this.tags,
+    required this.chef,
   });
 
   @override
@@ -36,11 +39,57 @@ class ProfileHeader extends StatelessWidget {
             //     color: Colors.black,
             //   ),
             // ),
-            Image.asset(
-              "assets/chef_background.png",
+            Image.network(
+              "https://example.com/chef_background.png",
               height: 206, // Increased height for better positioning
               width: double.infinity,
               fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                } else {
+                  return Container(
+                    height: 206,
+                    width: double.infinity,
+                    color: Colors.grey.shade200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    ),
+                  );
+                }
+              },
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                return Container(
+                  height: 206,
+                  width: double.infinity,
+                  color: Colors.grey.shade200,
+                  child: Center(
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                  ),
+                );
+              },
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 206, // Same height as the image
+                width: double.infinity,
+                color: Colors.black
+                    .withOpacity(0.5), // Placeholder color with opacity
+              ),
             ),
             Positioned(
               bottom: -50, // Moves profile picture into the white section
@@ -52,7 +101,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 80, // Slightly larger size
-                  backgroundImage: AssetImage(image),
+                  backgroundImage: NetworkImage(chef.profileImage),
                 ),
               ),
             ),
@@ -60,13 +109,13 @@ class ProfileHeader extends StatelessWidget {
         ),
         SizedBox(height: 40), // Adjusted spacing after profile image
         Text(
-          name,
+          chef.name,
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
         ),
-        Text(username,
+        Text(chef.username,
             style: GoogleFonts.poppins(
               color: Colors.grey,
               fontSize: 10,
@@ -74,7 +123,7 @@ class ProfileHeader extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 40),
           child: Text(
-            bio,
+            chef.bio,
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 12,
@@ -94,7 +143,7 @@ class ProfileHeader extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                rating,
+                chef.rating.floor(),
                 (index) => Icon(Icons.star, color: Colors.amber, size: 13),
               ),
             ),
@@ -105,7 +154,7 @@ class ProfileHeader extends StatelessWidget {
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
-          children: tags.map((tag) {
+          children: chef.specialties.take(3).map((tag) {
             return Chip(
               avatar: Icon(Icons.tag, color: Colors.black, size: 15),
               label: Text(
@@ -119,35 +168,34 @@ class ProfileHeader extends StatelessWidget {
           }).toList(),
         ),
         // SizedBox(height: 2),
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatScreen(),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1E451B),
-          
-                minimumSize: Size(double.infinity, 40),
-                // Wider button like the reference
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 30),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    chef: chef,
+                  ),
                 ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF1E451B),
+
+              minimumSize: Size(double.infinity, 40),
+              // Wider button like the reference
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Text(
-                "Message",
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+            ),
+            child: Text(
+              "Message",
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
