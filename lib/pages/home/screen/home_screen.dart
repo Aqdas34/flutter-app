@@ -5,12 +5,17 @@ import 'package:only_shef/pages/home/widgets/cuisine_custom_card.dart';
 import 'package:only_shef/widgets/custom_menu_button.dart';
 
 import 'package:only_shef/widgets/custome_nav_bar.dart';
+import 'package:provider/provider.dart';
+
+import '../../../provider/user_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    ;
     return Scaffold(
       backgroundColor: Color(0xffFDF7F2),
       body: Stack(
@@ -30,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                     ThreeGreenBarsMenu(),
                     CircleAvatar(
                       radius: 25,
-                      backgroundImage: AssetImage('assets/chef_image.jpg'),
+                      backgroundImage: NetworkImage(user.profileImage),
                     ),
                   ],
                 ),

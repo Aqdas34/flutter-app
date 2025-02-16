@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:only_shef/pages/home/screen/home_screen.dart';
 import 'dart:async';
 import 'package:only_shef/pages/login_sign/login_or_signup.dart';
+import 'package:only_shef/pages/splash/services/splash_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
+  SplashServices services = SplashServices();
 
   @override
   void initState() {
@@ -73,6 +75,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Check if token exists
     if (token != null && token.isNotEmpty) {
+      // ignore: use_build_context_synchronously
+      services.getUserData(token, context);
       // If token exists, navigate to HomeScreen
       Navigator.pushAndRemoveUntil(
         // ignore: use_build_context_synchronously

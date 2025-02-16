@@ -95,8 +95,8 @@ class AuthService {
             await prefs.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
 
-            String value = Provider.of<UserProvider>(context, listen: false).user.token;
-            showSuccess(context, 'Account Loggeed In $value');
+            // String value = Provider.of<UserProvider>(context, listen: false).user.token;
+            // showSuccess(context, 'Account Loggeed In $value');
 
             // showSnackBar(context, prefs.getString('x-auth-token')!);
             Navigator.pushAndRemoveUntil(

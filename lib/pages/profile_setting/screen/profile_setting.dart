@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/profile_setting/widgets/helper_widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../../../provider/user_provider.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   const ProfileSettingsScreen({super.key});
@@ -9,34 +13,36 @@ class ProfileSettingsScreen extends StatefulWidget {
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
-  bool isProfileSwitched = true;
+  bool isProfileSwitched = false;
   bool isPushNotificationsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: SingleChildScrollView(
+    final user = Provider.of<UserProvider>(context).user;
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 40.0),
+        child: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage(
-                    'assets/profile_image.png'), // Replace with network image if needed
+                backgroundImage: NetworkImage(
+                    user.profileImage), // Replace with network image if needed
               ),
               SizedBox(height: 10),
               Text(
-                "Junaid Rafiq",
+                user.name,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF333333)),
               ),
               Text(
-                "creativejunaid007@gmail.com",
+                user.email,
                 style: TextStyle(color: Color(0xFF707070), fontSize: 10),
               ),
               SizedBox(height: 10),
@@ -63,7 +69,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 buildSwitchTile(
                   icon: Icons.swap_horiz,
                   title: "Switch Profiles",
-                  subtitle: "Chef Profile",
+                  subtitle: "User Profile",
                   value: isProfileSwitched,
                   onChanged: (value) {
                     setState(() => isProfileSwitched = value);
