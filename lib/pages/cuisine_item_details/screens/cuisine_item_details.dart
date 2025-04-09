@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:only_shef/pages/cuisine_item_details/widgets/Tags_Widget.dart';
+// import 'package:only_shef/pages/cuisine_item_details/widgets/Tags_Widget.dart';
+import '../widgets/tags_widget.dart';
 import 'package:only_shef/pages/cuisine_item_details/widgets/hexagon_icon.dart';
 
 import '../../chat/screen/chat_screen.dart';
