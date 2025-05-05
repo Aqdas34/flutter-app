@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/cuisine/screens/cuisine_screen.dart';
+import 'package:only_shef/pages/home/screen/filter_bottom_sheet.dart';
 import 'package:only_shef/pages/home/widgets/cuisine_custom_card.dart';
+import 'package:only_shef/pages/verifications/screens/document_verify_screen.dart';
 import 'package:only_shef/widgets/custom_menu_button.dart';
 
 import 'package:only_shef/widgets/custome_nav_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/colors/colors.dart';
 import '../../../provider/user_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
   final List<Map<String, dynamic>> _cuisines = [
     {
@@ -91,6 +95,119 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Color(0xffFDF7F2),
+      key: scaffoldKey,
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Container(
+              color: Color(0xFF1E451B),
+              child: SizedBox(
+                height: 80,
+                width: double.infinity,
+              ),
+            ), // Margin from top
+            Container(
+              color: Color(0xFF1E451B),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(
+                      user.profileImage,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        user.name,
+                        style: GoogleFonts.poppins(
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Icon(
+                        Icons.edit,
+                        color: Color(0xFFFFFFFF),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    user.email,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white70,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.verified_outlined),
+              title: Text(
+                'Verification',
+                style: GoogleFonts.poppins(),
+              ),
+              contentPadding: EdgeInsets.only(top: 40, left: 20),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DocumentVerifyScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.qr_code_scanner_outlined),
+              title: Text(
+                'Terms and Conditions',
+                style: GoogleFonts.poppins(),
+              ),
+              contentPadding: EdgeInsets.only(top: 10, left: 20),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle_outlined),
+              title: Text(
+                'About',
+                style: GoogleFonts.poppins(),
+              ),
+              contentPadding: EdgeInsets.only(top: 10, left: 20),
+              onTap: () {},
+            ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1E451B),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {
+                  // Handle switch profile action
+                },
+                child: Center(
+                  child: Text(
+                    'Switch Profile',
+                    style: GoogleFonts.poppins(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           Padding(
@@ -105,7 +222,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ThreeGreenBarsMenu(),
+                    InkWell(
+                      onTap: () {
+                        scaffoldKey.currentState!.openDrawer();
+                      },
+                      child: ThreeGreenBarsMenu(),
+                    ),
                     CircleAvatar(
                       radius: 25,
                       backgroundImage: NetworkImage(user.profileImage),
@@ -146,15 +268,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(width: 16),
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(color: Color(0xFF1E451B), width: 1)),
-                      child:
-                          Icon(Icons.notifications, color: Color(0xFF1E451B)),
-                    ),
+                   InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled:
+                              true, // This makes the bottom sheet full screen
+                          backgroundColor: backgroundColor, // Optional
+                          builder: (context) => Container(
+                            height: MediaQuery.of(context).size.height * 1,
+                            width: MediaQuery.of(context)
+                                .size
+                                .width, // Covers 90% of the screen
+                            child: FilterBottomSheet(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(color: Color(0xFF1E451B), width: 1)),
+                        child: Image.asset(
+                          'assets/icons/filter_icon.png',
+                          height: 21,
+                          width: 21,
+                        ),
+                      ),),
                   ],
                 ),
                 SizedBox(

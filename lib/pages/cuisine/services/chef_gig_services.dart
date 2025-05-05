@@ -45,7 +45,7 @@ class ChefGigServices {
             print(element.backgroundImage);
           });
 
-          // print(chefProfiles[0].name);
+          print(chefProfiles[0].toString());
           // Handle the response here (e.g., parse JSON or update state)
         },
       );

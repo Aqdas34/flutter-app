@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
 import 'package:only_shef/pages/chat/screen/messages_screen.dart';
+import 'package:only_shef/pages/chef_appointments/screens/chef_appointments.dart';
 import 'package:only_shef/pages/home/screen/home_screen.dart';
 import 'package:only_shef/pages/profile_setting/screen/profile_setting.dart';
 
@@ -19,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   // List of icons and corresponding screens
   final List<Map<String, dynamic>> _navItems = [
     {'icon': Icons.home, 'screen': HomeScreen()},
-    {'icon': Icons.settings, 'screen': ProfileSettingsScreen()},
+    {'icon': Icons.settings, 'screen': ChefAppointments()},
     {'icon': Icons.message, 'screen': MessagesScreen()},
     {'icon': Icons.person, 'screen': ProfileSettingsScreen()},
   ];

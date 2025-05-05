@@ -6,6 +6,8 @@ import 'pages/splash/screen/splash_screen.dart';
 // import 'package:only_shef/pages/splash/screen/splash_screen.dart';
 // import 'package:only_shef/utils/custome_nav_bar.dart';
 // import 'package:only_shef/pages/splash/screen/splash_screen.dart';
+var screen_height;
+var screen_width;
 
 void main() {
   runApp(MultiProvider(
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    screen_height = MediaQuery.of(context).size.height;
+    screen_width = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
