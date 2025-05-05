@@ -9,8 +9,81 @@ import 'package:provider/provider.dart';
 
 import '../../../provider/user_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final List<Map<String, dynamic>> _cuisines = [
+    {
+      'name': 'Pakistani',
+      'color': Color(0xFF1B4149),
+      'image': 'assets/turkey.png',
+      'cuisineImage': 'assets/pakistani1.png',
+    },
+    {
+      'name': 'Chineese',
+      'color': Color(0xFF81C0FF),
+      'image': 'assets/chinese_logo.png',
+      'cuisineImage': 'assets/chinese1.png',
+    },
+    {
+      'name': 'Mexican',
+      'color': Color(0xFFCA4943),
+      'image': 'assets/mexican_logo.png',
+      'cuisineImage': 'assets/mexican1.png',
+    },
+    {
+      'name': 'Fast Food',
+      'color': Color(0xFF8186D9),
+      'image': 'assets/fastfood_logo.png',
+      'cuisineImage': 'assets/fastfood1.png',
+    },
+    {
+      'name': 'Desserts',
+      'color': Color(0xFF77B255),
+      'image': 'assets/deserts_logo.png',
+      'cuisineImage': 'assets/desert1.png',
+    },
+    {
+      'name': 'Others',
+      'color': Color(0xFFB769D3),
+      'image': 'assets/others_logo.png',
+      'cuisineImage': 'assets/desert1.png',
+    },
+  ];
+
+  List<Map<String, dynamic>> _filteredCuisines = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredCuisines = _cuisines;
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        _filteredCuisines = _cuisines;
+      } else {
+        _filteredCuisines = _cuisines.where((cuisine) {
+          return cuisine['name'].toLowerCase().contains(query);
+        }).toList();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +128,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
+                        controller: _searchController,
                         style: GoogleFonts.poppins(),
                         decoration: InputDecoration(
                           filled: true,
@@ -78,7 +152,6 @@ class HomeScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           border:
                               Border.all(color: Color(0xFF1E451B), width: 1)),
-                      // backgroundColor: Color(0xFF1E451B),
                       child:
                           Icon(Icons.notifications, color: Color(0xFF1E451B)),
                     ),
@@ -89,101 +162,26 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: GridView.count(
-                    padding: EdgeInsets.only(
-                        top: 5, bottom: 80), // Ensure no padding
+                    padding: EdgeInsets.only(top: 5, bottom: 80),
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
-                    children: [
-                      CustomCuisineCard(
-                        cuisineName: "Pakistani",
-                        backColor: Color(0xFF1B4149),
-                        imageLink: 'assets/turkey.png',
+                    children: _filteredCuisines.map((cuisine) {
+                      return CustomCuisineCard(
+                        cuisineName: cuisine['name'],
+                        backColor: cuisine['color'],
+                        imageLink: cuisine['image'],
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/pakistani1.png',
-                                    cuisineName: 'Pakistani Cuisine')),
+                                    imagePath: cuisine['cuisineImage'],
+                                    cuisineName: '${cuisine['name']} Cuisine')),
                           );
                         },
-                      ),
-                      CustomCuisineCard(
-                        backColor: Color(0xFF81C0FF),
-                        imageLink: 'assets/chinese_logo.png',
-                        cuisineName: "Chineese",
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/chinese1.png',
-                                    cuisineName: 'Chineese Cuisine')),
-                          );
-                        },
-                      ),
-                      CustomCuisineCard(
-                        backColor: Color(0xFFCA4943),
-                        imageLink: 'assets/mexican_logo.png',
-                        cuisineName: "Mexican",
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/mexican1.png',
-                                    cuisineName: 'Mexican Cuisine')),
-                          );
-                        },
-                      ),
-                      CustomCuisineCard(
-                        backColor: Color(0xFF8186D9),
-                        imageLink: 'assets/fastfood_logo.png',
-                        cuisineName: "Fast Food",
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/fastfood1.png',
-                                    cuisineName: 'Fast Food')),
-                          );
-                        },
-                      ),
-                      CustomCuisineCard(
-                        cuisineName: "Desserts",
-                        backColor: Color(0xFF77B255),
-                        imageLink:
-                            'assets/deserts_logo.png', // Make sure to add the correct image path
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/desert1.png',
-                                    cuisineName:
-                                        'Desserts')), // Update with your screen
-                          );
-                        },
-                      ),
-                      CustomCuisineCard(
-                        cuisineName: "Others",
-                        backColor: Color(0xFFB769D3),
-                        imageLink:
-                            'assets/others_logo.png', // Make sure to add the correct image path
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: 'assets/desert1.png',
-                                    cuisineName:
-                                        'Other Cuisine')), // Update with your screen
-                          );
-                        },
-                      ),
-                    ],
+                      );
+                    }).toList(),
                   ),
                 ),
               ],

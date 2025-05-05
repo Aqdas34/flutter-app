@@ -7,6 +7,7 @@ import 'package:only_shef/pages/cuisine_item_details/widgets/hexagon_icon.dart';
 import '../../chat/screen/chat_screen.dart';
 import '../../cuisine/models/chef.dart';
 import '../../cuisine/models/cuisines.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CuisineItemDetails extends StatelessWidget {
   const CuisineItemDetails(
@@ -313,8 +314,27 @@ class CuisineItemDetails extends StatelessWidget {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChatScreen(chef: chef))),
+                                  builder: (context) => FutureBuilder<String?>(
+                                        future: getCurrentUserId(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
+                                          if (snapshot.hasError ||
+                                              !snapshot.hasData) {
+                                            return const Center(
+                                                child: Text(
+                                                    'Error loading user data'));
+                                          }
+                                          return ChatScreen(
+                                            chef: chef,
+                                            currentUserId: snapshot.data!,
+                                          );
+                                        },
+                                      ))),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
@@ -341,4 +361,9 @@ class CuisineItemDetails extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<String?> getCurrentUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('userId');
 }

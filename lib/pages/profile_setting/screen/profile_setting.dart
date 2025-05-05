@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/profile_setting/widgets/helper_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:only_shef/pages/about/screens/terms_conditions_screen.dart';
+import 'package:only_shef/pages/about/screens/about_us_screen.dart';
+import 'package:only_shef/pages/about/screens/support_screen.dart';
+import 'package:only_shef/pages/profile_setting/screens/edit_profile_screen.dart';
 
 import '../../../provider/user_provider.dart';
 
@@ -47,7 +51,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
               ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(93, 35),
                   backgroundColor: Color(0xFF1E451B),
@@ -81,7 +92,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 buildNavigationTile(
                   icon: Icons.support,
                   title: "Support",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SupportScreen(),
+                      ),
+                    );
+                  },
                 ),
               ]),
 
@@ -99,9 +117,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     padding: EdgeInsets.only(left: 10, right: 10),
                     child: Divider()),
                 buildNavigationTile(
-                  icon: Icons.info,
+                  icon: Icons.info_outline,
                   title: "About Us",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AboutUsScreen(),
+                      ),
+                    );
+                  },
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 10, right: 10),
@@ -109,7 +134,14 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 buildNavigationTile(
                   icon: Icons.policy,
                   title: "Terms and Conditions",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TermsConditionsScreen(),
+                      ),
+                    );
+                  },
                 ),
                 Padding(
                     padding: EdgeInsets.only(left: 10, right: 10),

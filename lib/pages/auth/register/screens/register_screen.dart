@@ -4,6 +4,8 @@ import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
 import 'package:only_shef/pages/auth/service/register_service.dart';
 import 'package:only_shef/services/api_service.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
+import 'package:only_shef/pages/about/screens/terms_conditions_screen.dart';
+import 'package:only_shef/pages/about/screens/about_us_screen.dart';
 
 import '../../../../common/colors/colors.dart';
 
@@ -17,7 +19,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -31,20 +32,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      // _showError("All fields are required.");
       showError(context, "All fields are required.");
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      // _showError("Passwords do not match.");
       showError(context, "Passwords do not match.");
       return;
     }
 
     if (!_termsAccepted) {
       showError(context, "You must accept the terms and conditions.");
-      // _showError("You must accept the terms and conditions.");
       return;
     }
 
@@ -62,47 +60,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       _isLoading = false;
     });
-
-    // if (mounted) {
-    //   if (response != null && response.statusCode == 200) {
-    //     // _showSuccess("Registration successful.");
-    //     showSuccess(context, "Registration successful.");
-    //     // Navigate to the Login screen if still mounted
-    //     Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => LoginScreen()),
-    //     );
-    //   } else {
-    //     showError(context, "Registration failed. Please try again.");
-    //     // _showError("Registration failed. Please try again.");
-    //   }
-    // }
-    //  if (response != null && response.statusCode == 200) {
-    //   // Handle success, maybe navigate to another screen
-    //   _showSuccess("Registration successful.");
-
-    // } else {
-    //   _showError("Registration failed. Please try again.");
-    // }
   }
-
-//   void _showError(String message) {
-//     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//       content: Text(message),
-//       backgroundColor: Colors.red,
-//     ));
-//   }
-//  void _showSuccess(String message) {
-//     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//       content: Text(message),
-//       backgroundColor: Colors.green,
-//     ));
-//   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor, // Light background color
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -110,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 30),
             // Logo Section
             Image.asset(
-              'assets/logo.png', // Replace with your logo image path
+              'assets/logo.png',
               height: 230,
             ),
 
@@ -118,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Let’s Get Started",
+                "Let's Get Started",
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -140,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 15),
             // Name Input
             SizedBox(
-              height: 55, // Adjust the height as needed
+              height: 55,
               child: TextFormField(
                 style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
                 controller: _usernameController,
@@ -164,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 15),
             // Email Input
             SizedBox(
-              height: 55, // Adjust the height as needed
+              height: 55,
               child: TextFormField(
                 style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
                 controller: _emailController,
@@ -188,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 15),
             // Password Input
             SizedBox(
-              height: 55, // Adjust the height as needed
+              height: 55,
               child: TextFormField(
                 style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
                 controller: _passwordController,
@@ -201,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       fontSize: 14, color: Color(0xFFBABABA)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: primaryColor, width: 2),
+                    borderSide: BorderSide(color: secondryColor, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -213,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 15),
             // Confirm Password Input
             SizedBox(
-              height: 55, // Adjust the height as needed
+              height: 55,
               child: TextFormField(
                 style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
                 controller: _confirmPasswordController,
@@ -226,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       fontSize: 14, color: Color(0xFFBABABA)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: primaryColor, width: 2),
+                    borderSide: BorderSide(color: secondryColor, width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -235,73 +198,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-
+            const SizedBox(height: 15),
             // Terms and Conditions
             Row(
-              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: Checkbox(
-                    value: _termsAccepted,
-                    onChanged: (value) {
-                      setState(() {
-                        _termsAccepted = value!;
-                      });
-                      // Handle checkbox logic
-                    },
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    activeColor:
-                        primaryColor, // Set the active color to primaryColor
-                  ),
+                Checkbox(
+                  value: _termsAccepted,
+                  onChanged: (value) {
+                    setState(() {
+                      _termsAccepted = value!;
+                    });
+                  },
+                  activeColor: primaryColor,
                 ),
                 Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "I agree to the ",
-                          style: GoogleFonts.poppins(color: Colors.black54),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TermsConditionsScreen(),
                         ),
-                        TextSpan(
-                          text: "Terms and Conditions",
-                          style: GoogleFonts.poppins(
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            decorationThickness:
-                                0.7, // Adjust thickness as needed
-                            decorationStyle: TextDecorationStyle.solid,
-                            decorationColor: primaryColor,
-                          ),
-                        ),
-                      ],
+                      );
+                    },
+                    child: Text(
+                      "I agree to the Terms and Conditions",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: primaryColor,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 50),
-            // Signup Button
-            ElevatedButton(
-              onPressed: _isLoading ? null : _register,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor, // Dark green color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
+            const SizedBox(height: 30),
+            // Register Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                ),
-                minimumSize: Size(MediaQuery.of(context).size.width * 0.9,
-                    50), // Set width to 80% of screen width
-              ),
-              child: const Text(
-                "SignUp",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
               ),
             ),
             const SizedBox(height: 20),
+            // Login Link
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Already have an account? ",
+                  style: GoogleFonts.poppins(color: Colors.black45),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Login",
+                    style: GoogleFonts.poppins(
+                        color: primaryColor, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

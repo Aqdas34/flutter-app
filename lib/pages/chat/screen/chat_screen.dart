@@ -1,28 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../cuisine/models/chef.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.chef});
+  const ChatScreen(
+      {super.key, required this.chef, required this.currentUserId});
   final Chef chef;
+  final String currentUserId;
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _messages = [];
+  final List<Map<String, dynamic>> _messages = [];
+  late IO.Socket socket;
+  bool isConnected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initSocket();
+    loadChatHistory();
+  }
+
+  void initSocket() {
+    socket = IO.io('http://10.0.2.2:2004', <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+
+    socket.connect();
+
+    socket.onConnect((_) {
+      setState(() {
+        isConnected = true;
+      });
+      socket.emit('join', widget.currentUserId);
+    });
+
+    socket.on('message', (data) {
+      setState(() {
+        _messages.add({
+          'message': data['message'],
+          'isMe': data['senderId'] == widget.currentUserId,
+        });
+      });
+    });
+
+    socket.onDisconnect((_) {
+      setState(() {
+        isConnected = false;
+      });
+    });
+  }
+
+  Future<void> loadChatHistory() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://10.0.2.2:2004/chat/history/${widget.currentUserId}/${widget.chef.id}'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _messages.clear();
+          _messages.addAll(data
+              .map((msg) => {
+                    'message': msg['message'],
+                    'isMe': msg['senderId'] == widget.currentUserId,
+                  })
+              .toList());
+        });
+      }
+    } catch (e) {
+      print('Error loading chat history: $e');
+    }
+  }
 
   void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
+    if (_controller.text.isNotEmpty && isConnected) {
+      socket.emit('message', {
+        'senderId': widget.currentUserId,
+        'receiverId': widget.chef.id,
+        'message': _controller.text,
+      });
+
       setState(() {
-        _messages.add(_controller.text);
+        _messages.add({
+          'message': _controller.text,
+          'isMe': true,
+        });
         _controller.clear();
       });
     }
+  }
+
+  @override
+  void dispose() {
+    socket.disconnect();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -41,7 +125,10 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: const BackButton(),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(
+              isConnected ? Icons.wifi : Icons.wifi_off,
+              color: isConnected ? Colors.green : Colors.red,
+            ),
             onPressed: () {},
           ),
         ],
@@ -67,23 +154,32 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   )
                 : ListView.builder(
+                    reverse: true,
                     itemCount: _messages.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade200,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              _messages[index],
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
+                      final message = _messages[index];
+                      return Align(
+                        alignment: message['isMe']
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 8,
+                          ),
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: message['isMe']
+                                ? Color(0xFF1E451B)
+                                : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            message['message'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color:
+                                  message['isMe'] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -129,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     child: IconButton(
                       icon: Transform.rotate(
-                        angle: -3.14 / 4, // 270 degrees (3π/2)
+                        angle: -3.14 / 4,
                         child: Padding(
                           padding: const EdgeInsets.only(
                             bottom: 9.0,
@@ -146,10 +242,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       onPressed: _sendMessage,
                     ),
-                    // child: IconButton(
-                    //   icon: Image.asset('assets/send_message.png', height: 24, width: 24,fit: BoxFit.cover,),
-                    //   onPressed: _sendMessage,
-                    // ),
                   ),
                 ],
               ),

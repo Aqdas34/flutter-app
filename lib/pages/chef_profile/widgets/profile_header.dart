@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../chat/screen/chat_screen.dart';
 import '../../cuisine/models/chef.dart';
@@ -175,8 +176,21 @@ class ProfileHeader extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatScreen(
-                    chef: chef,
+                  builder: (context) => FutureBuilder<String?>(
+                    future: getCurrentUserId(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError || !snapshot.hasData) {
+                        return const Center(
+                            child: Text('Error loading user data'));
+                      }
+                      return ChatScreen(
+                        chef: chef,
+                        currentUserId: snapshot.data!,
+                      );
+                    },
                   ),
                 ),
               );
@@ -202,5 +216,10 @@ class ProfileHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<String?> getCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userId');
   }
 }

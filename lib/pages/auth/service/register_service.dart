@@ -4,7 +4,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:only_shef/pages/home/screen/home_screen.dart';
+import 'package:only_shef/pages/auth/register/screens/verify_registration_otp_screen.dart';
+import 'package:only_shef/services/email_service.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,39 @@ import '../../../provider/user_provider.dart';
 
 class AuthService {
   Future<bool> signUpUser({
+    required String name,
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      // First send OTP
+      bool otpSent = await EmailService.sendOTP(email);
+      if (!otpSent) {
+        showError(context, "Failed to send verification email");
+        return false;
+      }
+
+      // Navigate to OTP verification screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerifyRegistrationOTPScreen(
+            email: email,
+            name: name,
+            password: password,
+          ),
+        ),
+      );
+
+      return true;
+    } catch (e) {
+      showSnackBar(context, 'Something went wrong');
+    }
+    return false;
+  }
+
+  Future<bool> completeRegistration({
     required String name,
     required String email,
     required String password,
@@ -42,12 +76,6 @@ class AuthService {
           response: response,
           context: context,
           onSuccess: () async {
-            // SharedPreferences prefs = await SharedPreferences.getInstance();
-            // Provider.of<UserProvider>(context, listen: false)
-            //     .setUser(response.body);
-            // await prefs.setString(
-            //     'x-auth-token', jsonDecode(response.body)['token']);
-
             Provider.of<UserProvider>(context, listen: false)
                 .setUser(response.body);
 
@@ -55,12 +83,7 @@ class AuthService {
             await prefs.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
 
-            showSuccess(context, 'Account Created -  You are Logged in');
-
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-                (route) => false);
+            showSuccess(context, 'Account Created - You are Logged in');
           });
       return true;
     } catch (e) {
@@ -69,43 +92,35 @@ class AuthService {
     return false;
   }
 
-  void signInUser(
-      {required BuildContext context,
-      required String email,
-      required String password}) async {
+  Future<bool> signInUser({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
     try {
-      http.Response response = await http.post(Uri.parse('$uri/api/signin'),
-          body: jsonEncode({'email': email, 'password': password}),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          });
-      httpErrorHandling(
-          response: response,
-          context: context,
-          onSuccess: () async {
-            // SharedPreferences prefs = await SharedPreferences.getInstance();
-            // Provider.of<UserProvider>(context, listen: false)
-            //     .setUser(response.body);
-            // await prefs.setString(
-            //     'x-auth-token', jsonDecode(response.body)['token']);
+      http.Response response = await http.post(
+        Uri.parse('$uri/api/signin'),
+        body: jsonEncode({'email': email, 'password': password}),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-            Provider.of<UserProvider>(context, listen: false)
-                .setUser(response.body);
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString(
-                'x-auth-token', jsonDecode(response.body)['token']);
-
-            // String value = Provider.of<UserProvider>(context, listen: false).user.token;
-            // showSuccess(context, 'Account Loggeed In $value');
-
-            // showSnackBar(context, prefs.getString('x-auth-token')!);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-                (route) => false);
-          });
+      if (response.statusCode == 200) {
+        Provider.of<UserProvider>(context, listen: false)
+            .setUser(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+            'x-auth-token', jsonDecode(response.body)['token']);
+        return true;
+      } else {
+        showError(
+            context, jsonDecode(response.body)['error'] ?? 'Login failed');
+        return false;
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      showError(context, e.toString());
+      return false;
     }
   }
 
