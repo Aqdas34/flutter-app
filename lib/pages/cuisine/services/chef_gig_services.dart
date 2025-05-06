@@ -32,6 +32,7 @@ class ChefGigServices {
           'x-auth-token': user.token,
         },
       );
+      // print(response.body);
 
       List<Chef> chefProfiles = [];
       httpErrorHandling(
@@ -40,12 +41,19 @@ class ChefGigServices {
         context: context,
         onSuccess: () {
           final List<dynamic> jsonData = jsonDecode(response.body);
+          print(jsonData);
+          // print(jsonData);
           chefProfiles = jsonData.map((json) => Chef.fromJson(json)).toList();
+          // chefProfiles.forEach((element) {
+          //   print(element.backgroundImage);
+          // });
+          print("chefProfiles[0].name" + chefProfiles[0].name);
+          print(chefProfiles.length);
           chefProfiles.forEach((element) {
-            print(element.backgroundImage);
+            print(element.name);
           });
 
-          print(chefProfiles[0].toString());
+          // print(chefProfiles[0].toString());
           // Handle the response here (e.g., parse JSON or update state)
         },
       );

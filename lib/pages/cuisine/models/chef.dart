@@ -1,5 +1,6 @@
 class Chef {
   final String id;
+  final String chefId;
   final String bio;
   final String username;
   final int experience;
@@ -18,9 +19,11 @@ class Chef {
   final bool isVerified;
   final String backgroundImage;
   final String gigImage;
+  final List<BookedDate> bookedDates;
 
   Chef({
     required this.id,
+    required this.chefId,
     required this.bio,
     required this.experience,
     required this.specialties,
@@ -36,6 +39,7 @@ class Chef {
     required this.address,
     required this.type,
     required this.isVerified,
+    required this.bookedDates,
     this.backgroundImage = "",
     this.gigImage = "",
     this.username = "",
@@ -43,31 +47,37 @@ class Chef {
 
   factory Chef.fromJson(Map<String, dynamic> json) {
     return Chef(
-      id: json['_id'],
-      bio: json['Bio'],
-      experience: json['Experience'],
-      specialties: List<String>.from(json['Specialties']),
-      rating: json['Rating'].toDouble(),
-      availabilityStatus: json['AvailabilityStatus'],
-      pricingPerHour: json['PricingPerHour'].toDouble(),
-      profileVerificationStatus: json['ProfileVerificationStatus'],
-      verifiedBadge: json['VerifiedBadge'],
-      profileImage: json['profileImage'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      address: json['address'],
-      type: json['type'],
-      isVerified: json['isVerified'],
-      backgroundImage: json['BackgroundImage'] ?? "",
-      gigImage: json['GigImage'] ?? "",
-      username: json['username'] ?? "",
+      id: json['_id'] ?? '',
+      chefId: json['ChefID'] ?? '',
+      bio: json['Bio'] ?? '',
+      experience: json['Experience'] ?? 0,
+      specialties: List<String>.from(json['Specialties'] ?? []),
+      rating: (json['Rating'] ?? 0).toDouble(),
+      availabilityStatus: json['AvailabilityStatus'] ?? '',
+      pricingPerHour: (json['PricingPerHour'] ?? 0).toDouble(),
+      profileVerificationStatus: json['ProfileVerificationStatus'] ?? '',
+      verifiedBadge: json['VerifiedBadge'] ?? false,
+      profileImage: json['profileImage'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      address: json['address'] ?? '',
+      type: json['type'] ?? '',
+      isVerified: json['isVerified'] ?? false,
+      bookedDates: (json['BookedDates'] as List?)
+              ?.map((date) => BookedDate.fromJson(date))
+              .toList() ??
+          [],
+      backgroundImage: json['BackgroundImage'] ?? '',
+      gigImage: json['GigImage'] ?? '',
+      username: json['username'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
+      'ChefID': chefId,
       'Bio': bio,
       'Experience': experience,
       'Specialties': specialties,
@@ -86,6 +96,35 @@ class Chef {
       'GigImage': gigImage,
       'BackgroundImage': backgroundImage,
       'username': username,
+      'BookedDates': bookedDates.map((date) => date.toJson()).toList(),
+    };
+  }
+}
+
+class BookedDate {
+  final String date;
+  final String bookingId;
+  final String id;
+
+  BookedDate({
+    required this.date,
+    required this.bookingId,
+    required this.id,
+  });
+
+  factory BookedDate.fromJson(Map<String, dynamic> json) {
+    return BookedDate(
+      date: json['date'] ?? '',
+      bookingId: json['bookingId'] ?? '',
+      id: json['_id'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'bookingId': bookingId,
+      '_id': id,
     };
   }
 }

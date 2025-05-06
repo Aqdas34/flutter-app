@@ -33,10 +33,16 @@ class _CuisineScreenState extends State<CuisineScreen> {
   List<Cuisine> cuisines = [];
   int currentChefIndes = 0;
   bool cuisineShowable = false;
+  bool isLoading = true;
 
   void fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
     chefs = await chefGigServices.getChefProfiles(context, widget.cuisineName);
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -192,68 +198,76 @@ class _CuisineScreenState extends State<CuisineScreen> {
           ),
           SizedBox(height: 5),
           Expanded(
-            child: _selectedType == 0
-                ? chefs.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No chef is available',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            color: primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      )
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFF1E451B),
+                    ),
+                  )
+                : _selectedType == 0
+                    ? chefs.isEmpty
+                        ? Center(
+                            child: Text(
+                              'No chef is available',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                color: primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) => InkWell(
+                              onLongPress: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChefProfileScreen(
+                                              chef: chefs[index],
+                                            )));
+                              },
+                              onTap: () async {
+                                cuisines = await chefGigServices.getChefCuisine(
+                                    context, chefs[index].id);
+                                setState(() {
+                                  cuisineShowable = true;
+                                  _selectedType = 1;
+                                  currentChefIndes = index;
+                                });
+                              },
+                              child: ChefGig(
+                                chef: chefs[index],
+                              ),
+                            ),
+                            itemCount: chefs.length,
+                          )
                     : ListView.builder(
                         padding: EdgeInsets.zero,
                         itemBuilder: (context, index) => InkWell(
-                          onLongPress: () {
+                          onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ChefProfileScreen(
-                                          chef: chefs[index],
+                                    builder: (context) => CuisineItemDetails(
+                                          cuisine: cuisines[index],
+                                          chef: chefs[currentChefIndes],
                                         )));
                           },
-                          onTap: () async {
-                            cuisines = await chefGigServices.getChefCuisine(
-                                context, chefs[index].id);
-                            setState(() {
-                              cuisineShowable = true;
-                              _selectedType = 1;
-                              currentChefIndes = index;
-                            });
-                          },
-                          child: ChefGig(
-                            chef: chefs[index],
+                          child: SingleCuisineWidget(
+                            rating: 4,
+                            cuisineName: cuisines[index].name,
+                            imageUrl: cuisines[index].imageUrl,
+                            location: chefs[currentChefIndes]
+                                .address
+                                .split(' ')
+                                .first,
+                            totalOrders: 500,
+                            cuisineType: cuisines[index].cuisineType,
                           ),
                         ),
-                        itemCount: chefs.length,
-                      )
-                : ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineItemDetails(
-                                      cuisine: cuisines[index],
-                                      chef: chefs[currentChefIndes],
-                                    )));
-                      },
-                      child: SingleCuisineWidget(
-                        rating: 4,
-                        cuisineName: cuisines[index].name,
-                        imageUrl: cuisines[index].imageUrl,
-                        location:
-                            chefs[currentChefIndes].address.split(' ').first,
-                        totalOrders: 500,
-                        cuisineType: cuisines[index].cuisineType,
+                        itemCount: cuisines.length,
                       ),
-                    ),
-                    itemCount: cuisines.length,
-                  ),
           ),
         ],
       ),

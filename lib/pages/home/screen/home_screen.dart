@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/colors/colors.dart';
 import '../../../provider/user_provider.dart';
+import '../../../main.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,9 +20,12 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with WidgetsBindingObserver, RouteAware {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchFocused = false;
   final List<Map<String, dynamic>> _cuisines = [
     {
       'name': 'Pakistani',
@@ -68,12 +72,36 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _filteredCuisines = _cuisines;
     _searchController.addListener(_onSearchChanged);
+    _searchFocusNode.addListener(_onFocusChange);
+
+    // Add keyboard visibility listener
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusManager.instance.addListener(() {
+        if (!FocusManager.instance.primaryFocus!.hasFocus) {
+          setState(() {
+            _isSearchFocused = false;
+          });
+          FocusScope.of(context).unfocus();
+        }
+      });
+    });
   }
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final ModalRoute? route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  void _onFocusChange() {
+    if (mounted) {
+      setState(() {
+        _isSearchFocused = _searchFocusNode.hasFocus;
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -90,252 +118,301 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
+    _searchController.dispose();
+    _searchFocusNode.removeListener(_onFocusChange);
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when coming back to this screen
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isSearchFocused = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).user;
 
-    return Scaffold(
-      backgroundColor: Color(0xffFDF7F2),
-      key: scaffoldKey,
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Container(
-              color: Color(0xFF1E451B),
-              child: SizedBox(
-                height: 80,
-                width: double.infinity,
-              ),
-            ), // Margin from top
-            Container(
-              color: Color(0xFF1E451B),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(
-                      user.profileImage,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_searchFocusNode.hasFocus) {
+          FocusScope.of(context).unfocus();
+          await Future.delayed(Duration(milliseconds: 50));
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xffFDF7F2),
+        key: scaffoldKey,
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Container(
+                color: Color(0xFF1E451B),
+                child: SizedBox(
+                  height: 80,
+                  width: double.infinity,
+                ),
+              ), // Margin from top
+              Container(
+                color: Color(0xFF1E451B),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(
+                        user.profileImage,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        user.name,
-                        style: GoogleFonts.poppins(
-                          color: Color(0xFFFFFFFF),
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          user.name,
+                          style: GoogleFonts.poppins(
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.edit,
-                        color: Color(0xFFFFFFFF),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    user.email,
-                    style: GoogleFonts.poppins(
-                      color: Colors.white70,
-                      fontSize: 10,
+                        Icon(
+                          Icons.edit,
+                          color: Color(0xFFFFFFFF),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.verified_outlined),
-              title: Text(
-                'Verification',
-                style: GoogleFonts.poppins(),
-              ),
-              contentPadding: EdgeInsets.only(top: 40, left: 20),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DocumentVerifyScreen()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.qr_code_scanner_outlined),
-              title: Text(
-                'Terms and Conditions',
-                style: GoogleFonts.poppins(),
-              ),
-              contentPadding: EdgeInsets.only(top: 10, left: 20),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle_outlined),
-              title: Text(
-                'About',
-                style: GoogleFonts.poppins(),
-              ),
-              contentPadding: EdgeInsets.only(top: 10, left: 20),
-              onTap: () {},
-            ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1E451B),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                    Text(
+                      user.email,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white70,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  // Handle switch profile action
+              ),
+              ListTile(
+                leading: Icon(Icons.verified_outlined),
+                title: Text(
+                  'Verification',
+                  style: GoogleFonts.poppins(),
+                ),
+                contentPadding: EdgeInsets.only(top: 40, left: 20),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DocumentVerifyScreen()));
                 },
-                child: Center(
-                  child: Text(
-                    'Switch Profile',
-                    style: GoogleFonts.poppins(
-                      color: Color(0xFFFFFFFF),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
+              ),
+              ListTile(
+                leading: Icon(Icons.qr_code_scanner_outlined),
+                title: Text(
+                  'Terms and Conditions',
+                  style: GoogleFonts.poppins(),
+                ),
+                contentPadding: EdgeInsets.only(top: 10, left: 20),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.account_circle_outlined),
+                title: Text(
+                  'About',
+                  style: GoogleFonts.poppins(),
+                ),
+                contentPadding: EdgeInsets.only(top: 10, left: 20),
+                onTap: () {},
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1E451B),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () {
+                    // Handle switch profile action
+                  },
+                  child: Center(
+                    child: Text(
+                      'Switch Profile',
+                      style: GoogleFonts.poppins(
+                        color: Color(0xFFFFFFFF),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            scaffoldKey.currentState!.openDrawer();
+                          },
+                          child: ThreeGreenBarsMenu(),
+                        ),
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(user.profileImage),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "What cuisine chef\nwould you like 2 Select?",
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1E451B),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              _searchFocusNode.unfocus();
+                            },
+                            child: TextField(
+                              focusNode: _searchFocusNode,
+                              controller: _searchController,
+                              style: GoogleFonts.poppins(),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                prefixIcon:
+                                    Icon(Icons.search, color: Colors.black54),
+                                hintText: "Search food, chefs",
+                                hintStyle:
+                                    GoogleFonts.poppins(color: Colors.black54),
+                                labelStyle: GoogleFonts.poppins(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(45),
+                                  borderSide: BorderSide(
+                                      width: 1, color: Color(0xFF1E451B)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled:
+                                  true, // This makes the bottom sheet full screen
+                              backgroundColor: backgroundColor, // Optional
+                              builder: (context) => Container(
+                                height: MediaQuery.of(context).size.height * 1,
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Covers 90% of the screen
+                                child: FilterBottomSheet(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Color(0xFF1E451B), width: 1)),
+                            child: Image.asset(
+                              'assets/icons/filter_icon.png',
+                              height: 21,
+                              width: 21,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: GridView.count(
+                        padding: EdgeInsets.only(top: 5, bottom: 80),
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        children: _filteredCuisines.map((cuisine) {
+                          return CustomCuisineCard(
+                            cuisineName: cuisine['name'],
+                            backColor: cuisine['color'],
+                            imageLink: cuisine['image'],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CuisineScreen(
+                                        imagePath: cuisine['cuisineImage'],
+                                        cuisineName:
+                                            '${cuisine['name']} Cuisine')),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+            Positioned(
+              bottom: 15,
+              left: 50,
+              right: 50,
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 200),
+                child: _isSearchFocused
+                    ? SizedBox.shrink()
+                    : CustomNavigationBar(),
+              ),
+            )
           ],
         ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        scaffoldKey.currentState!.openDrawer();
-                      },
-                      child: ThreeGreenBarsMenu(),
-                    ),
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage(user.profileImage),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "What cuisine chef\nwould you like 2 Select?",
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E451B),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        style: GoogleFonts.poppins(),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          prefixIcon: Icon(Icons.search, color: Colors.black54),
-                          hintText: "Search food, chefs",
-                          hintStyle: GoogleFonts.poppins(color: Colors.black54),
-                          labelStyle: GoogleFonts.poppins(),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(45),
-                            borderSide:
-                                BorderSide(width: 1, color: Color(0xFF1E451B)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                   InkWell(
-                      borderRadius: BorderRadius.circular(50),
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled:
-                              true, // This makes the bottom sheet full screen
-                          backgroundColor: backgroundColor, // Optional
-                          builder: (context) => Container(
-                            height: MediaQuery.of(context).size.height * 1,
-                            width: MediaQuery.of(context)
-                                .size
-                                .width, // Covers 90% of the screen
-                            child: FilterBottomSheet(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border:
-                                Border.all(color: Color(0xFF1E451B), width: 1)),
-                        child: Image.asset(
-                          'assets/icons/filter_icon.png',
-                          height: 21,
-                          width: 21,
-                        ),
-                      ),),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                  child: GridView.count(
-                    padding: EdgeInsets.only(top: 5, bottom: 80),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    children: _filteredCuisines.map((cuisine) {
-                      return CustomCuisineCard(
-                        cuisineName: cuisine['name'],
-                        backColor: cuisine['color'],
-                        imageLink: cuisine['image'],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CuisineScreen(
-                                    imagePath: cuisine['cuisineImage'],
-                                    cuisineName: '${cuisine['name']} Cuisine')),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 15,
-            left: 50,
-            right: 50,
-            child: CustomNavigationBar(),
-          )
-        ],
       ),
     );
   }

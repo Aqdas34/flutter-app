@@ -9,6 +9,7 @@ import 'package:only_shef/pages/cuisine/services/chef_gig_services.dart';
 import 'package:only_shef/pages/cuisine/widgets/chef_gig.dart';
 import 'package:only_shef/pages/cuisine/widgets/cuisine_widget.dart';
 import 'package:only_shef/pages/cuisine_item_details/screens/cuisine_item_details.dart';
+import 'package:only_shef/pages/search_results/services/search_services.dart';
 
 import '../../../common/colors/colors.dart';
 import '../../../common/constants/show_snack_bar.dart';
@@ -37,6 +38,7 @@ class SearchResults extends StatefulWidget {
 class _SearchResultsState extends State<SearchResults> {
   int _selectedType = 0;
   ChefGigServices chefGigServices = ChefGigServices();
+  SearchServices searchServices = SearchServices();
   List<Chef> chefs = [];
   List<Cuisine> cuisines = [];
   int currentChefIndes = 0;
@@ -44,16 +46,38 @@ class _SearchResultsState extends State<SearchResults> {
   bool isLoading = true;
 
   void fetchData() async {
-    chefs = await chefGigServices.getChefProfiles(context, widget.cuisineType);
+    try {
+      // Format dates to ISO string format
+      final startDate = widget.initialDate.toIso8601String();
+      final endDate = widget.endDate.toIso8601String();
 
-    if (chefs.isEmpty) {
-      showSnackBar(context, "No chefs available for this cuisine type");
-    } else {
-      showSnackBar(context, "Chefs available for this cuisine type");
+      // Search chefs by availability
+      chefs = await searchServices.searchByAvailability(
+          context, startDate, endDate);
+
+      // Filter chefs by cuisine name
+      if (widget.cuisineName != null && widget.cuisineName.isNotEmpty) {
+        chefs = chefs
+            .where((chef) => chef.specialties.any((specialty) => specialty
+                .toLowerCase()
+                .contains(widget.cuisineType.toLowerCase())))
+            .toList();
+      }
+      print(widget.cuisineType);
+
+      if (chefs.isEmpty) {
+        showSnackBar(context, "No chefs available for the selected dates");
+      } else {
+        showSnackBar(context, "Chefs available for the selected dates");
+      }
+    } catch (e) {
+      showSnackBar(context, "Error searching chefs: ${e.toString()}");
+      // print(e);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override

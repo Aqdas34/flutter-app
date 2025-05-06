@@ -9,6 +9,8 @@ import 'pages/splash/screen/splash_screen.dart';
 var screen_height;
 var screen_width;
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
     screen_width = MediaQuery.of(context).size.width;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [routeObserver],
       home: SplashScreen(),
     );
   }
