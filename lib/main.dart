@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:only_shef/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'pages/splash/screen/splash_screen.dart';
+import 'common/theme/app_theme.dart';
 
 // import 'package:only_shef/pages/splash/screen/splash_screen.dart';
 // import 'package:only_shef/utils/custome_nav_bar.dart';
@@ -12,9 +13,14 @@ var screen_width;
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() {
-  runApp(MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
-      child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -27,6 +33,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorObservers: [routeObserver],
+      title: 'Only Chef',
+      theme: AppTheme.lightTheme,
       home: SplashScreen(),
     );
   }

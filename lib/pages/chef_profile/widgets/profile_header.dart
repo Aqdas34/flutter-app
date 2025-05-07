@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:only_shef/common/colors/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
 
 import '../../chat/screen/chat_screen.dart';
 import '../../cuisine/models/chef.dart';
+import '../../send_offer/screens/send_offer_screen.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -171,47 +175,249 @@ class ProfileHeader extends StatelessWidget {
         // SizedBox(height: 2),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 30),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FutureBuilder<String?>(
-                    future: getCurrentUserId(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasError || !snapshot.hasData) {
-                        return const Center(
-                            child: Text('Error loading user data'));
-                      }
-                      return ChatScreen(
-                        chef: chef,
-                        currentUserId: snapshot.data!,
-                      );
-                    },
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Prepare booked dates set
+                    final bookedDates = chef.bookedDates
+                        .map((b) => DateTime.tryParse(b.date))
+                        .whereType<DateTime>()
+                        .toSet();
+                    DateTime? selectedDate;
+                    bool isDateAvailable(DateTime date) {
+                      final now = DateTime.now();
+                      final lastAllowed =
+                          DateTime(now.year, now.month + 1, now.day);
+                      final isBooked = bookedDates.any((d) =>
+                          d.year == date.year &&
+                          d.month == date.month &&
+                          d.day == date.day);
+                      final isInRange = !date.isBefore(
+                              DateTime(now.year, now.month, now.day)) &&
+                          !date.isAfter(lastAllowed);
+                      return isInRange && !isBooked;
+                    }
+
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              title: Text(
+                                'Book Chef',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: primaryColor,
+                                ),
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 350,
+                                    height: 350,
+                                    child: CalendarCarousel(
+                                      onDayPressed: (date, events) {
+                                        if (!isDateAvailable(date)) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    'Please select a valid, available date.')),
+                                          );
+                                          return;
+                                        }
+                                        setState(() {
+                                          selectedDate = date;
+                                        });
+                                      },
+                                      selectedDateTime: selectedDate,
+                                      minSelectedDate: DateTime.now(),
+                                      maxSelectedDate: DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month + 1,
+                                          DateTime.now().day),
+                                      weekendTextStyle: GoogleFonts.poppins(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      weekdayTextStyle: GoogleFonts.poppins(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      headerTextStyle: GoogleFonts.poppins(
+                                        color: primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                      daysTextStyle: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      selectedDayButtonColor: secondryColor,
+                                      selectedDayBorderColor: secondryColor,
+                                      todayButtonColor: selectedDate == null
+                                          ? secondryColor
+                                          : Colors.transparent,
+                                      todayBorderColor: selectedDate == null
+                                          ? secondryColor
+                                          : Colors.transparent,
+                                      thisMonthDayBorderColor:
+                                          Colors.transparent,
+                                      customDayBuilder: (
+                                        bool isSelectable,
+                                        int index,
+                                        bool isSelectedDay,
+                                        bool isToday,
+                                        bool isPrevMonthDay,
+                                        TextStyle textStyle,
+                                        bool isNextMonthDay,
+                                        bool isThisMonthDay,
+                                        DateTime day,
+                                      ) {
+                                        final isBooked = bookedDates.any((d) =>
+                                            d.year == day.year &&
+                                            d.month == day.month &&
+                                            d.day == day.day);
+                                        if (isBooked) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '${day.day}',
+                                              style: GoogleFonts.poppins(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return null;
+                                      },
+                                      daysHaveCircularBorder: true,
+                                      height: 350.0,
+                                      showOnlyCurrentMonthDate: true,
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: (selectedDate != null &&
+                                              isDateAvailable(selectedDate!))
+                                          ? () {
+                                              // TODO: Implement send offer logic
+                                              Navigator.of(context).pop();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SendOfferScreen(
+                                                    chefId: chef.id,
+                                                    selectedDate: selectedDate!,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          : null,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Send Offer',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: secondryColor,
+                    minimumSize: Size(double.infinity, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(36),
+                    ),
+                  ),
+                  child: Text(
+                    "Book Chef",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF1E451B),
-
-              minimumSize: Size(double.infinity, 40),
-              // Wider button like the reference
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-            child: Text(
-              "Message",
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
+              SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FutureBuilder<String?>(
+                          future: getCurrentUserId(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasError || !snapshot.hasData) {
+                              return const Center(
+                                  child: Text('Error loading user data'));
+                            }
+                            return ChatScreen(
+                              chef: chef,
+                              currentUserId: snapshot.data!,
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1E451B),
+                    minimumSize: Size(double.infinity, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(36),
+                    ),
+                  ),
+                  child: Text(
+                    "Message",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ],

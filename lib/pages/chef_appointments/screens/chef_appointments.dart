@@ -1,11 +1,13 @@
 import 'dart:ui';
 
-import 'package:calendar_cc/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/chef_appointments/widgets/apointments.dart';
-import 'package:only_shef/widgets/snack_bar_util.dart';
+import 'package:only_shef/pages/chef_appointments/services/chef_appointment_services.dart';
+import 'package:only_shef/pages/chef_profile/screen/chef_profile.dart';
+import 'package:only_shef/pages/cuisine/models/chef.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../provider/user_provider.dart';
@@ -22,7 +24,7 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
     "MultiCuisine",
     "Pakistani",
     "Italian",
-    "Chinese",
+    "Chineese",
     "Fast Food",
     "Mexican",
     "Others"
@@ -31,6 +33,51 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
   int currentlySelected = 0;
   DateTime? selectedDate;
   bool isDateSelected = false;
+  List<Chef> availableChefs = [];
+  List<Chef> filteredChefs = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set today's date as initial date
+    selectedDate = DateTime.now();
+    isDateSelected = true;
+    // Fetch chefs for today
+    fetchAvailableChefs();
+  }
+
+  Future<void> fetchAvailableChefs() async {
+    if (selectedDate == null) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final dateString =
+        "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}";
+    final chefs = await ChefAppointmentServices()
+        .getAvailableChefsByDate(context, dateString);
+
+    setState(() {
+      availableChefs = chefs;
+      filterChefsByCuisine();
+      isLoading = false;
+    });
+  }
+
+  void filterChefsByCuisine() {
+    if (currentlySelected == 0) {
+      // Show all chefs for MultiCuisine
+      filteredChefs = availableChefs;
+    } else {
+      // Filter chefs based on selected cuisine
+      final selectedCuisine = _list[currentlySelected];
+      filteredChefs = availableChefs.where((chef) {
+        return chef.specialties.contains(selectedCuisine);
+      }).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +201,11 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
                           },
                         );
                         if (date != null) {
-                          // showSuccess(context, "Date Selected: $date");
                           setState(() {
                             isDateSelected = true;
                             selectedDate = date;
                           });
+                          await fetchAvailableChefs();
                         }
                       },
                       icon: Icon(
@@ -200,6 +247,7 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
                         onTap: () {
                           setState(() {
                             currentlySelected = index;
+                            filterChefsByCuisine();
                           });
                         },
                         child: Row(
@@ -246,97 +294,135 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
             ),
             SizedBox(
               height: 230,
-              child: ListView.builder(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 50,
-                    width: 180,
-                    margin: EdgeInsets.only(right: 15),
-                    padding: EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                      color: secondryColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Image.asset("assets/images/newchef.png"),
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          left: 5,
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                width: 170,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                  color: Colors.white
-                                      .withOpacity(0.2), // Transparent color
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Colors.white
-                                        .withOpacity(0.3), // Border effect
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: primaryColor))
+                  : filteredChefs.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No chefs available for selected date and cuisine",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredChefs.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final chef = filteredChefs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChefProfileScreen(
+                                      chef: chef,
+                                    ),
                                   ),
+                                );
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 180,
+                                margin: EdgeInsets.only(right: 15),
+                                padding: EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(
+                                  color: secondryColor,
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Stack(
                                   children: [
-                                    Text(
-                                      "Ayesha Ali",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryColor,
+                                    Center(
+                                      child: Image.network(
+                                        chef.profileImage,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Image.asset(
+                                              "assets/images/newchef.png");
+                                        },
                                       ),
                                     ),
-                                    Text(
-                                      "Pakistani Chef",
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600,
-                                        color: primaryColor,
+                                    Positioned(
+                                      bottom: 5,
+                                      left: 5,
+                                      child: ClipRRect(
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: 5, sigmaY: 5),
+                                          child: Container(
+                                            padding: EdgeInsets.all(12),
+                                            width: 170,
+                                            height: 70,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.white.withOpacity(0.2),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                color: Colors.white
+                                                    .withOpacity(0.3),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  chef.name,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: primaryColor,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  chef.specialties.isNotEmpty
+                                                      ? chef.specialties.first
+                                                      : "Chef",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: primaryColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 10,
+                                      child: CircleAvatar(
+                                        radius: 18,
+                                        backgroundColor: primaryColor,
+                                        child: Icon(
+                                          Icons.arrow_outward_rounded,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 10,
+                                      child: SizedBox(
+                                        height: 35,
+                                        width: 35,
+                                        child: Image.asset(
+                                          'assets/images/available_icon.png',
+                                          color: primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundColor: primaryColor,
-                            child: Icon(
-                              Icons.arrow_outward_rounded,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 10,
-                          child: SizedBox(
-                            height: 35,
-                            width: 35,
-                            child: Image.asset(
-                              'assets/images/available_icon.png',
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
             ),
           ],
         ),
