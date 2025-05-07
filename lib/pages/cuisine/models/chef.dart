@@ -1,3 +1,5 @@
+import 'package:only_shef/pages/chef_appointments/models/booked_date.dart';
+
 class Chef {
   final String id;
   final String chefId;
@@ -32,17 +34,17 @@ class Chef {
     required this.pricingPerHour,
     required this.profileVerificationStatus,
     required this.verifiedBadge,
-    required this.profileImage,
+    required this.bookedDates,
     required this.name,
     required this.email,
-    required this.password,
     required this.address,
     required this.type,
     required this.isVerified,
-    required this.bookedDates,
+    required this.profileImage,
     this.backgroundImage = "",
     this.gigImage = "",
     this.username = "",
+    required this.password,
   });
 
   factory Chef.fromJson(Map<String, dynamic> json) {
@@ -57,17 +59,16 @@ class Chef {
       pricingPerHour: (json['PricingPerHour'] ?? 0).toDouble(),
       profileVerificationStatus: json['ProfileVerificationStatus'] ?? '',
       verifiedBadge: json['VerifiedBadge'] ?? false,
-      profileImage: json['profileImage'] ?? '',
+      bookedDates: (json['BookedDates'] as List? ?? [])
+          .map((date) => BookedDate.fromJson(date))
+          .toList(),
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      password: json['password'] ?? '',
       address: json['address'] ?? '',
       type: json['type'] ?? '',
       isVerified: json['isVerified'] ?? false,
-      bookedDates: (json['BookedDates'] as List?)
-              ?.map((date) => BookedDate.fromJson(date))
-              .toList() ??
-          [],
+      profileImage: json['profileImage'] ?? '',
+      password: json['password'] ?? '',
       backgroundImage: json['BackgroundImage'] ?? '',
       gigImage: json['GigImage'] ?? '',
       username: json['username'] ?? '',

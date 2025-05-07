@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/chef_appointments/widgets/apointments.dart';
 import 'package:only_shef/pages/chef_appointments/services/chef_appointment_services.dart';
+import 'package:only_shef/pages/chef_appointments/models/appointment.dart';
 import 'package:only_shef/pages/chef_profile/screen/chef_profile.dart';
 import 'package:only_shef/pages/cuisine/models/chef.dart';
 
@@ -36,6 +37,8 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
   List<Chef> availableChefs = [];
   List<Chef> filteredChefs = [];
   bool isLoading = false;
+  List<Appointment> appointments = [];
+  bool isLoadingAppointments = false;
 
   @override
   void initState() {
@@ -45,6 +48,8 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
     isDateSelected = true;
     // Fetch chefs for today
     fetchAvailableChefs();
+    // Fetch appointments
+    fetchAppointments();
   }
 
   Future<void> fetchAvailableChefs() async {
@@ -63,6 +68,20 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
       availableChefs = chefs;
       filterChefsByCuisine();
       isLoading = false;
+    });
+  }
+
+  Future<void> fetchAppointments() async {
+    setState(() {
+      isLoadingAppointments = true;
+    });
+
+    final appointmentResponse =
+        await ChefAppointmentServices().getAppointments(context);
+
+    setState(() {
+      appointments = appointmentResponse.appointments;
+      isLoadingAppointments = false;
     });
   }
 
@@ -117,25 +136,44 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Upcomming Appointments",
+                    "Upcoming Appointments",
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Expanded(
-                    child: SizedBox(
-                      height: 255,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 2,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return SizedBox(
-                              height: 255, child: AppointmentWidget());
-                        },
-                      ),
-                    ),
+                    child: isLoadingAppointments
+                        ? Center(
+                            child:
+                                CircularProgressIndicator(color: primaryColor))
+                        : appointments.isEmpty
+                            ? Center(
+                                child: Text(
+                                  "No upcoming appointments",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              )
+                            : SizedBox(
+                                height: 255,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: appointments.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    final appointment = appointments[index];
+                                    return SizedBox(
+                                      height: 255,
+                                      child: AppointmentWidget(
+                                        appointment: appointment,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                   ),
                 ],
               ),

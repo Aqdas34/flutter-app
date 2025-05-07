@@ -3,18 +3,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/main.dart';
-import '../../../models/offer.dart';
+
+import '../../chat/screen/chat_screen.dart';
+import '../../cuisine/models/chef.dart';
 import '../../cuisine/models/cuisines.dart';
 import '../../cuisine/services/chef_gig_services.dart';
+import '../models/offer.dart';
 
 class SendOfferScreen extends StatefulWidget {
   final String chefId;
   final DateTime selectedDate;
+  final Chef chef;
+  final bool isFromMessage;
 
   const SendOfferScreen({
     Key? key,
     required this.chefId,
     required this.selectedDate,
+    required this.chef,
+    this.isFromMessage = false,
   }) : super(key: key);
 
   @override
@@ -89,7 +96,7 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                 foregroundColor: MaterialStateProperty.resolveWith((states) {
                   return null;
                 }),
-                backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                backgroundColor: WidgetStateProperty.all(Colors.transparent),
                 minimumSize: MaterialStateProperty.all(Size(80, 40)),
                 shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
@@ -132,8 +139,17 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
       numberOfPersons: numberOfPersons,
       comments: commentsController.text,
     );
-    // TODO: Send offer to backend
-    print('Sending offer: ${offer.toJson()}');
+    print('Offer to return: \\${offer.toJson()}');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chef: widget.chef,
+          currentUserId: "123",
+          initialOffer: offer,
+        ),
+      ),
+    );
   }
 
   @override
@@ -157,6 +173,15 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
+                            if (widget.isFromMessage) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatScreen(
+                                            chef: widget.chef,
+                                            currentUserId: "123",
+                                          )));
+                            }
                             Navigator.pop(context);
                           },
                           child: Icon(
@@ -246,91 +271,110 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                     const SizedBox(height: 10),
                     SizedBox(
                       height: 200,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: chefCuisines.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 20),
-                        itemBuilder: (context, index) {
-                          final cuisine = chefCuisines[index];
-                          final selected = selectedCuisineId == cuisine.id;
-                          final cardWidth = selected ? 175.0 : 160.0;
-                          final cardHeight = selected ? 220.0 : 200.0;
-                          return GestureDetector(
-                            onTap: () => _selectCuisine(cuisine.id),
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 200),
-                              width: cardWidth,
-                              height: cardHeight,
-                              decoration: BoxDecoration(
-                                color: selected ? secondryColor : Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: selected
-                                      ? primaryColor
-                                      : Colors.grey.shade300,
-                                  width: selected ? 2 : 1,
+                      child: chefCuisines.isEmpty
+                          ? Center(
+                              child: Text(
+                                "There are no cuisines",
+                                style: GoogleFonts.poppins(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 8,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
                               ),
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.network(
-                                      cuisine.imageUrl,
-                                      width: cardWidth,
-                                      height: cardHeight,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                        width: cardWidth,
-                                        height: cardHeight,
-                                        color: Colors.grey.shade200,
-                                        child: Icon(Icons.restaurant,
-                                            color: primaryColor, size: 40),
+                            )
+                          : ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: chefCuisines.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 20),
+                              itemBuilder: (context, index) {
+                                final cuisine = chefCuisines[index];
+                                final selected =
+                                    selectedCuisineId == cuisine.id;
+                                final cardWidth = selected ? 175.0 : 160.0;
+                                final cardHeight = selected ? 220.0 : 200.0;
+                                return GestureDetector(
+                                  onTap: () => _selectCuisine(cuisine.id),
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 200),
+                                    width: cardWidth,
+                                    height: cardHeight,
+                                    decoration: BoxDecoration(
+                                      color: selected
+                                          ? secondryColor
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: selected
+                                            ? primaryColor
+                                            : Colors.grey.shade300,
+                                        width: selected ? 2 : 1,
                                       ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    height: cardHeight * 0.3,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: secondryColor.withOpacity(0.6),
-                                        borderRadius: BorderRadius.vertical(
-                                          bottom: Radius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
                                         ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          cuisine.name,
-                                          style: GoogleFonts.poppins(
-                                            color: primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                      ],
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Image.network(
+                                            cuisine.imageUrl,
+                                            width: cardWidth,
+                                            height: cardHeight,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Container(
+                                              width: cardWidth,
+                                              height: cardHeight,
+                                              color: Colors.grey.shade200,
+                                              child: Icon(Icons.restaurant,
+                                                  color: primaryColor,
+                                                  size: 40),
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ),
+                                        Positioned(
+                                          left: 0,
+                                          right: 0,
+                                          bottom: 0,
+                                          height: cardHeight * 0.3,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: secondryColor
+                                                  .withOpacity(0.6),
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                bottom: Radius.circular(20),
+                                              ),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                cuisine.name,
+                                                style: GoogleFonts.poppins(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                     const SizedBox(height: 5),
                     // Number of Persons

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 // import 'package:only_shef/pages/cuisine_item_details/widgets/Tags_Widget.dart';
+import '../../../models/user.dart';
+import '../../../provider/user_provider.dart';
 import '../widgets/tags_widget.dart';
 import 'package:only_shef/pages/cuisine_item_details/widgets/hexagon_icon.dart';
 
@@ -315,7 +318,7 @@ class CuisineItemDetails extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FutureBuilder<String?>(
-                                        future: getCurrentUserId(),
+                                        future: getCurrentUserId(context),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
@@ -363,7 +366,7 @@ class CuisineItemDetails extends StatelessWidget {
   }
 }
 
-Future<String?> getCurrentUserId() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('userId');
+Future<String?> getCurrentUserId(BuildContext context) async {
+  final User user = Provider.of<UserProvider>(context, listen: false).user;
+  return user.id;
 }

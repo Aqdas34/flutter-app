@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/common/colors/colors.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 
+import '../../../provider/user_provider.dart';
 import '../../chat/screen/chat_screen.dart';
 import '../../cuisine/models/chef.dart';
 import '../../send_offer/screens/send_offer_screen.dart';
@@ -325,6 +327,7 @@ class ProfileHeader extends StatelessWidget {
                                                       SendOfferScreen(
                                                     chefId: chef.id,
                                                     selectedDate: selectedDate!,
+                                                    chef: chef,
                                                   ),
                                                 ),
                                               );
@@ -380,14 +383,48 @@ class ProfileHeader extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => FutureBuilder<String?>(
-                          future: getCurrentUserId(),
+                          future: getCurrentUserId(context),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return const Center(
                                   child: CircularProgressIndicator());
                             }
-                            if (snapshot.hasError || !snapshot.hasData) {
+                            if (snapshot.hasError) {
+                              return Scaffold(
+                                body: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.error_outline,
+                                          color: Colors.red, size: 48),
+                                      SizedBox(height: 16),
+                                      Text(
+                                        'Please login first to send messages',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      SizedBox(height: 24),
+                                      ElevatedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: primaryColor,
+                                        ),
+                                        child: Text(
+                                          'Go Back',
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                            if (!snapshot.hasData) {
                               return const Center(
                                   child: Text('Error loading user data'));
                             }
@@ -424,8 +461,13 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  Future<String?> getCurrentUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userId');
+  Future<String?> getCurrentUserId(BuildContext context) async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final userId = prefs.getString('userId');
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (user == null) {
+      throw Exception('User ID not found. Please login first.');
+    }
+    return user.id;
   }
 }

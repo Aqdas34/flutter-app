@@ -6,7 +6,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       primaryColor: primaryColor,
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: backgroundColor,
       textTheme: TextTheme(
         displayLarge: GoogleFonts.poppins(),
         displayMedium: GoogleFonts.poppins(),

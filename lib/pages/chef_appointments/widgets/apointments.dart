@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/common/colors/colors.dart';
-import 'package:only_shef/pages/chef_appointments/screens/test_screen.dart';
+import 'package:only_shef/pages/chef_appointments/screens/appointment_details_screen.dart';
+import 'package:only_shef/pages/chef_appointments/models/appointment.dart';
+import 'package:intl/intl.dart';
+
+import '../../chat/screen/chat_screen.dart';
 
 class AppointmentWidget extends StatelessWidget {
-  const AppointmentWidget({super.key});
+  final Appointment appointment;
+
+  const AppointmentWidget({
+    super.key,
+    required this.appointment,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +29,6 @@ class AppointmentWidget extends StatelessWidget {
               color: primaryColor,
             ),
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +37,7 @@ class AppointmentWidget extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      "Chef Ayesha Ali",
+                      appointment.chefInfo.name,
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -37,7 +45,9 @@ class AppointmentWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Pakistani Chef",
+                      appointment.chefInfo.specialties.isNotEmpty
+                          ? appointment.chefInfo.specialties.first
+                          : "Chef",
                       style: GoogleFonts.poppins(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
@@ -65,7 +75,7 @@ class AppointmentWidget extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          "25 Wed, 2025",
+                          DateFormat('dd MMM, yyyy').format(appointment.date),
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -95,7 +105,7 @@ class AppointmentWidget extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          "10:00 AM",
+                          appointment.time,
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
@@ -113,32 +123,43 @@ class AppointmentWidget extends StatelessWidget {
                           SizedBox(
                             width: 90,
                           ),
-                          Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 133, 152, 113),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.chat_bubble_outline,
-                                    color: Colors.white,
-                                    size: 14,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "Chat  ",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatScreen(
+                                            chef: appointment.chef,
+                                            currentUserId: appointment.userId,
+                                          )));
+                            },
+                            child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 8),
+                                decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 133, 152, 113),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.chat_bubble_outline,
                                       color: Colors.white,
+                                      size: 14,
                                     ),
-                                  ),
-                                ],
-                              ))
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Chat  ",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          )
                         ],
                       ),
                     )
@@ -148,10 +169,12 @@ class AppointmentWidget extends StatelessWidget {
                   height: 240,
                   width: 140,
                   decoration: BoxDecoration(
-                    // color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/newchef.png"),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      "assets/images/newchef.png",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -167,7 +190,11 @@ class AppointmentWidget extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TestScreen()),
+                MaterialPageRoute(
+                  builder: (context) => AppointmentDetailsScreen(
+                    appointment: appointment,
+                  ),
+                ),
               );
             },
             child: CircleAvatar(

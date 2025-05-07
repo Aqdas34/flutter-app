@@ -7,7 +7,6 @@ class Offer {
   final List<String> selectedCuisines;
   final int numberOfPersons;
   final String comments;
-  final String status; // pending, accepted, rejected
 
   Offer({
     required this.id,
@@ -18,7 +17,6 @@ class Offer {
     required this.selectedCuisines,
     required this.numberOfPersons,
     required this.comments,
-    this.status = 'pending',
   });
 
   Map<String, dynamic> toJson() {
@@ -31,7 +29,6 @@ class Offer {
       'selectedCuisines': selectedCuisines,
       'numberOfPersons': numberOfPersons,
       'comments': comments,
-      'status': status,
     };
   }
 
@@ -45,7 +42,6 @@ class Offer {
       selectedCuisines: List<String>.from(json['selectedCuisines']),
       numberOfPersons: json['numberOfPersons'],
       comments: json['comments'],
-      status: json['status'],
     );
   }
 }
