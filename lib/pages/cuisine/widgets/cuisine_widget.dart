@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SingleCuisineWidget extends StatelessWidget {
-  SingleCuisineWidget({
+  const SingleCuisineWidget({
     super.key,
     required this.rating,
     required this.cuisineName,

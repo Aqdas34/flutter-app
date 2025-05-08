@@ -12,11 +12,11 @@ import '../../cuisine/models/chef.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
-    Key? key,
+    super.key,
     required this.chef,
     required this.currentUserId,
     this.initialOffer,
-  }) : super(key: key);
+  });
   final Chef chef;
   final String currentUserId;
   final Offer? initialOffer;
@@ -355,7 +355,7 @@ Additional Comments: ${offer.comments}
                                                 ),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  "At " + time,
+                                                  "At $time",
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 15,
                                                     color: primaryColor,
@@ -388,7 +388,7 @@ Additional Comments: ${offer.comments}
                                                   ),
                                                   Spacer(),
                                                   Text(
-                                                    '$budget',
+                                                    budget,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 16,
                                                       fontWeight:

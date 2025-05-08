@@ -1,4 +1,3 @@
-import 'package:only_shef/pages/chef_appointments/models/booked_date.dart';
 
 class Chef {
   final String id;

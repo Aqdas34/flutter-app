@@ -344,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen>
                               isScrollControlled:
                                   true, // This makes the bottom sheet full screen
                               backgroundColor: backgroundColor, // Optional
-                              builder: (context) => Container(
+                              builder: (context) => SizedBox(
                                 height: MediaQuery.of(context).size.height * 1,
                                 width: MediaQuery.of(context)
                                     .size

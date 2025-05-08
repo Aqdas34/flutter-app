@@ -388,7 +388,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               onPrimary: Colors.white,
                               onSurface: Colors.black,
                             ),
-                            dialogBackgroundColor: Colors.white,
                             textTheme: TextTheme(
                               displayLarge: GoogleFonts.poppins(),
                               displayMedium: GoogleFonts.poppins(),
@@ -402,7 +401,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               bodyLarge: GoogleFonts.poppins(),
                               bodyMedium: GoogleFonts.poppins(),
                               bodySmall: GoogleFonts.poppins(),
-                            ),
+                            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
                           ),
                           child: child!,
                         );
@@ -471,7 +470,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             onPrimary: Colors.white,
                             onSurface: Colors.black,
                           ),
-                          dialogBackgroundColor: Colors.white,
                           textTheme: TextTheme(
                             displayLarge: GoogleFonts.poppins(),
                             displayMedium: GoogleFonts.poppins(),
@@ -485,7 +483,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             bodyLarge: GoogleFonts.poppins(),
                             bodyMedium: GoogleFonts.poppins(),
                             bodySmall: GoogleFonts.poppins(),
-                          ),
+                          ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
                         ),
                         child: child!,
                       );

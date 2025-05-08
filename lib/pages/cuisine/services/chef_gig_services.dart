@@ -47,11 +47,11 @@ class ChefGigServices {
           // chefProfiles.forEach((element) {
           //   print(element.backgroundImage);
           // });
-          print("chefProfiles[0].name" + chefProfiles[0].name);
+          print("chefProfiles[0].name${chefProfiles[0].name}");
           print(chefProfiles.length);
-          chefProfiles.forEach((element) {
+          for (var element in chefProfiles) {
             print(element.name);
-          });
+          }
 
           // print(chefProfiles[0].toString());
           // Handle the response here (e.g., parse JSON or update state)

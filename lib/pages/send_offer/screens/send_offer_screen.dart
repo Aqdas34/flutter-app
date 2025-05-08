@@ -17,12 +17,12 @@ class SendOfferScreen extends StatefulWidget {
   final bool isFromMessage;
 
   const SendOfferScreen({
-    Key? key,
+    super.key,
     required this.chefId,
     required this.selectedDate,
     required this.chef,
     this.isFromMessage = false,
-  }) : super(key: key);
+  });
 
   @override
   State<SendOfferScreen> createState() => _SendOfferScreenState();
@@ -66,12 +66,12 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
               error: Colors.red,
             ),
             timePickerTheme: TimePickerThemeData(
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-                  states.contains(MaterialState.selected)
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
                       ? primaryColor
                       : Colors.white),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-                  states.contains(MaterialState.selected)
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+                  states.contains(WidgetState.selected)
                       ? Colors.white
                       : primaryColor),
               hourMinuteTextStyle: GoogleFonts.poppins(
@@ -80,25 +80,25 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                 color: primaryColor,
               ),
               hourMinuteColor:
-                  MaterialStateColor.resolveWith((states) => Colors.white),
+                  WidgetStateColor.resolveWith((states) => Colors.white),
               hourMinuteTextColor:
-                  MaterialStateColor.resolveWith((states) => primaryColor),
+                  WidgetStateColor.resolveWith((states) => primaryColor),
               dialHandColor: primaryColor,
               dialBackgroundColor: secondryColor.withOpacity(0.2),
               entryModeIconColor: primaryColor,
             ),
             textButtonTheme: TextButtonThemeData(
               style: ButtonStyle(
-                textStyle: MaterialStateProperty.all(
+                textStyle: WidgetStateProperty.all(
                   GoogleFonts.poppins(
                       fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                foregroundColor: MaterialStateProperty.resolveWith((states) {
+                foregroundColor: WidgetStateProperty.resolveWith((states) {
                   return null;
                 }),
                 backgroundColor: WidgetStateProperty.all(Colors.transparent),
-                minimumSize: MaterialStateProperty.all(Size(80, 40)),
-                shape: MaterialStateProperty.all(
+                minimumSize: WidgetStateProperty.all(Size(80, 40)),
+                shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
               ),
             ),

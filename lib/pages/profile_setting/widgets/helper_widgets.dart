@@ -121,7 +121,7 @@ Widget buildLogoutButton(BuildContext context) {
     onTap: () {
       showLogoutDialog(context);
     },
-    child: Container(
+    child: SizedBox(
       height: 43,
       child: ListTile(
         minVerticalPadding: 0, // else 2px still present

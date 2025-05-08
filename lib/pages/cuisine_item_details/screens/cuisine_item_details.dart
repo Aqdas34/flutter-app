@@ -10,7 +10,6 @@ import 'package:only_shef/pages/cuisine_item_details/widgets/hexagon_icon.dart';
 import '../../chat/screen/chat_screen.dart';
 import '../../cuisine/models/chef.dart';
 import '../../cuisine/models/cuisines.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CuisineItemDetails extends StatelessWidget {
   const CuisineItemDetails(

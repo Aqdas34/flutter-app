@@ -49,7 +49,7 @@ class EmailService {
         ''';
 
       final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
+      print('Message sent: $sendReport');
       return true;
     } catch (e) {
       print('Error sending email: $e');
