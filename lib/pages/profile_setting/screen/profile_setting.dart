@@ -6,6 +6,7 @@ import 'package:only_shef/pages/about/screens/terms_conditions_screen.dart';
 import 'package:only_shef/pages/about/screens/about_us_screen.dart';
 import 'package:only_shef/pages/about/screens/support_screen.dart';
 import 'package:only_shef/pages/profile_setting/screens/edit_profile_screen.dart';
+import 'package:only_shef/pages/verifications/screens/document_verify_screen.dart';
 
 import '../../../provider/user_provider.dart';
 
@@ -83,7 +84,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   subtitle: "User Profile",
                   value: isProfileSwitched,
                   onChanged: (value) {
-                    setState(() => isProfileSwitched = value);
+                    if (!user.isVerified) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DocumentVerifyScreen(),
+                        ),
+                      );
+                    } else {
+                      setState(() => isProfileSwitched = value);
+                    }
                   },
                 ),
                 Padding(
