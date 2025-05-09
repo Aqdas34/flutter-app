@@ -70,6 +70,17 @@ class _SplashScreenState extends State<SplashScreen>
   void navigateUser() async {
     await Future.delayed(Duration(seconds: 4)); // Wait for 4 seconds
 
+    // For testing, directly navigate to login screen
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginOrSignup()),
+        (route) => false,
+      );
+    }
+
+    // Comment out the original code for now
+    /*
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('x-auth-token');
 
@@ -94,6 +105,7 @@ class _SplashScreenState extends State<SplashScreen>
         );
       }
     }
+    */
   }
 
   @override

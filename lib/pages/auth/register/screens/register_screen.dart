@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/auth/login/screen/login_screen.dart';
 import 'package:only_shef/pages/auth/service/register_service.dart';
-import 'package:only_shef/services/api_service.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
 import 'package:only_shef/pages/about/screens/terms_conditions_screen.dart';
-import 'package:only_shef/pages/about/screens/about_us_screen.dart';
 
 import '../../../../common/colors/colors.dart';
 

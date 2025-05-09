@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_text/circular_text/model.dart';
 import 'package:flutter_circular_text/circular_text/widget.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:only_shef/common/constants/show_snack_bar.dart';
 import 'package:only_shef/pages/chef_profile/screen/chef_profile.dart';
 import 'package:only_shef/pages/cuisine/models/cuisines.dart';
 import 'package:only_shef/pages/cuisine/services/chef_gig_services.dart';

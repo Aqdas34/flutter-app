@@ -25,4 +25,9 @@ class UserProvider extends ChangeNotifier {
     _user = user;
     notifyListeners();
   }
+
+  void updateProfilePicture(String profilePicture) {
+    _user = _user.copyWith(profileImage: profilePicture);
+    notifyListeners();
+  }
 }

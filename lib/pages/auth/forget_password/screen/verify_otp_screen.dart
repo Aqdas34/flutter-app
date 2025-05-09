@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:only_shef/common/colors/colors.dart';
-import 'package:only_shef/common/constants/global_variable.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
 import 'package:only_shef/pages/auth/forget_password/screen/reset_password_screen.dart';
-import 'dart:convert';
 import 'package:only_shef/services/email_service.dart';
 
 class VerifyOTPScreen extends StatefulWidget {

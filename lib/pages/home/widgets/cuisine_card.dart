@@ -6,7 +6,7 @@ class CuisineCard extends StatelessWidget {
   final VoidCallback onTap;
   final double size; // Added a size parameter to control the round box size
 
-  const CuisineCard({
+  const CuisineCard({super.key, 
     required this.color,
     required this.imagePath,
     required this.onTap,

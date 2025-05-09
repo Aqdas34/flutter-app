@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/pages/auth/service/register_service.dart';
 import 'package:only_shef/pages/home/screen/home_screen.dart';
-import 'package:only_shef/services/api_service.dart';
 import 'package:only_shef/widgets/snack_bar_util.dart';
 import 'package:only_shef/pages/auth/register/screens/register_screen.dart';
 import 'package:only_shef/pages/auth/forget_password/screen/forget_password_screen.dart';
@@ -32,15 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      AuthService _authService = AuthService();
-      await _authService.signInUser(
-        context: context,
+      AuthService authService = AuthService();
+      bool loginSuccess = await authService.signInUser(
+        context: context,  
         email: _emailController.text,
         password: _passwordController.text,
       );
 
-      // If login is successful, navigate to home screen
-      if (mounted) {
+      // Only navigate if login was successful
+      if (loginSuccess && mounted) {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),

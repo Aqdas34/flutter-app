@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 
 import '../../../../common/colors/colors.dart';
 import '../../../../common/constants/global_variable.dart';
-import '../../../../common/constants/http_response.dart';
 import '../../../../provider/user_provider.dart';
 import '../../../../widgets/snack_bar_util.dart';
 

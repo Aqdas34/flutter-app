@@ -6,7 +6,11 @@ import 'package:only_shef/pages/about/screens/terms_conditions_screen.dart';
 import 'package:only_shef/pages/about/screens/about_us_screen.dart';
 import 'package:only_shef/pages/about/screens/support_screen.dart';
 import 'package:only_shef/pages/profile_setting/screens/edit_profile_screen.dart';
+<<<<<<< HEAD
 import 'package:only_shef/pages/verifications/screens/document_verify_screen.dart';
+=======
+import 'package:only_shef/pages/profile_setting/screens/verification_screen.dart';
+>>>>>>> 27abfb9f66c9308688e629ded55ccd88c2ac6646
 
 import '../../../provider/user_provider.dart';
 
@@ -84,6 +88,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   subtitle: "User Profile",
                   value: isProfileSwitched,
                   onChanged: (value) {
+<<<<<<< HEAD
                     if (!user.isVerified) {
                       Navigator.push(
                         context,
@@ -93,6 +98,11 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       );
                     } else {
                       setState(() => isProfileSwitched = value);
+=======
+                    setState(() => isProfileSwitched = value);
+                    if (value) {
+                      Navigator.pushNamed(context, '/document-capture');
+>>>>>>> 27abfb9f66c9308688e629ded55ccd88c2ac6646
                     }
                   },
                 ),

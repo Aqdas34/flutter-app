@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
 
 import '../../../provider/user_provider.dart';
 import '../../chat/screen/chat_screen.dart';
@@ -465,9 +463,6 @@ class ProfileHeader extends StatelessWidget {
     // final prefs = await SharedPreferences.getInstance();
     // final userId = prefs.getString('userId');
     final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (user == null) {
-      throw Exception('User ID not found. Please login first.');
-    }
     return user.id;
   }
 }

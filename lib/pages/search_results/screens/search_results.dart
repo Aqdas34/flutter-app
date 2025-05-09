@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_circular_text/circular_text/model.dart';
-import 'package:flutter_circular_text/circular_text/widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:only_shef/pages/chef_profile/screen/chef_profile.dart';
@@ -56,7 +54,7 @@ class _SearchResultsState extends State<SearchResults> {
           context, startDate, endDate);
 
       // Filter chefs by cuisine name
-      if (widget.cuisineName != null && widget.cuisineName.isNotEmpty) {
+      if (widget.cuisineName.isNotEmpty) {
         chefs = chefs
             .where((chef) => chef.specialties.any((specialty) => specialty
                 .toLowerCase()

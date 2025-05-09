@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../provider/user_provider.dart';
 
 class ChefAppointments extends StatefulWidget {
-  ChefAppointments({super.key});
+  const ChefAppointments({super.key});
 
   @override
   State<ChefAppointments> createState() => _ChefAppointmentsState();
@@ -218,7 +218,6 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
                                   onPrimary: Colors.white,
                                   onSurface: Colors.black,
                                 ),
-                                dialogBackgroundColor: Colors.white,
                                 textTheme: TextTheme(
                                   displayLarge: GoogleFonts.poppins(),
                                   displayMedium: GoogleFonts.poppins(),
@@ -232,7 +231,7 @@ class _ChefAppointmentsState extends State<ChefAppointments> {
                                   bodyLarge: GoogleFonts.poppins(),
                                   bodyMedium: GoogleFonts.poppins(),
                                   bodySmall: GoogleFonts.poppins(),
-                                ),
+                                ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
                               ),
                               child: child!,
                             );

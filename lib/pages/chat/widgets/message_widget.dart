@@ -80,43 +80,35 @@ class MessageItemWidget extends StatelessWidget {
                             color: primaryColor,
                           ),
                         ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.63,
+                      Expanded(
+                        child: Text(
+                          message,
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            color: isUnread ? Colors.black : Colors.grey,
+                            fontWeight:
+                                isUnread ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (isUnread)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 10.0, top: 4.0),
+                          child: CircleAvatar(
+                            radius: 12,
+                            backgroundColor: primaryColor,
                             child: Text(
-                              message,
+                              numberofMessagesPending,
                               style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                color: isUnread ? Colors.black : Colors.grey,
-                                fontWeight: isUnread
-                                    ? FontWeight.w600
-                                    : FontWeight.normal,
+                                color: Colors.white,
+                                fontSize: 9,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(width: 10),
-                          if (isUnread)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10.0, top: 4.0),
-                              child: CircleAvatar(
-                                radius: 12,
-                                backgroundColor: primaryColor,
-                                child: Text(
-                                  numberofMessagesPending,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontSize: 9,
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      )
+                        ),
                     ],
                   ),
                 ),
