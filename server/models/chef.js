@@ -12,9 +12,6 @@ const ChefSchema = new Schema({
         type: String,
         required: true
     },
-
-
-
     Experience: {
         type: Number,
         required: true
@@ -32,6 +29,17 @@ const ChefSchema = new Schema({
         enum: ['Available', 'Unavailable'],
         default: 'Unavailable'
     },
+    BookedDates: [{
+        date: {
+            type: Date,
+            required: true
+        },
+        bookingId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Booking',
+            required: true
+        }
+    }],
     PricingPerHour: {
         type: Number,
         required: true
@@ -53,9 +61,6 @@ const ChefSchema = new Schema({
         type: String,
         required: false,
     }
-
-
-
 });
 
 module.exports = mongoose.model('Chef', ChefSchema);

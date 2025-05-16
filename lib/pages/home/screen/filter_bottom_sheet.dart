@@ -14,7 +14,7 @@ class FilterBottomSheet extends StatefulWidget {
 bool isFilterSelected = false;
 List<String> cuisineTypes = [
   "Pakistani",
-  "Chineese",
+  "Chinese",
   "Italian",
   "Mexican",
   "Fast Food",
@@ -25,7 +25,7 @@ List<bool> cuisineBools = [true, false, false, false, false, false];
 
 List<String> chefTypes = [
   "Pakistani",
-  "Chineese",
+  "Chinese",
   "Mexican",
   "Thai",
   "Continental",
@@ -274,8 +274,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         backgroundColor: backgroundColor,
                         label: Container(
                           height: 20,
-                          width:
-                              screen_width * 0.38, // or a fixed value like 100
+                          width: screen_width * 0.38,
                           alignment: Alignment.center,
                           child: Text(
                             priceRanges[index],
@@ -316,61 +315,59 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   );
                 }),
           ),
-        ),
-        SizedBox(
-          height: screen_height * 0.02,
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Text(
-              "Dates",
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff707070),
+          SizedBox(
+            height: screen_height * 0.02,
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Text(
+                "Dates",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff707070),
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(
-          height: screen_height * 0.02,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FilterChip(
-                backgroundColor: backgroundColor,
-                label: Container(
-                  height: 20,
-                  width: screen_width * 0.38, // or a fixed value like 100
-                  alignment: Alignment.center,
-                  child: Text(
-                    "${initialDate.day}/${initialDate.month}/${initialDate.year}",
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff707070),
+          SizedBox(
+            height: screen_height * 0.02,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FilterChip(
+                  backgroundColor: backgroundColor,
+                  label: Container(
+                    height: 20,
+                    width: screen_width * 0.38,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${initialDate.day}/${initialDate.month}/${initialDate.year}",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff707070),
+                      ),
                     ),
                   ),
-                ),
-                labelStyle: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff707070)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(153),
-                ),
-                selected: false,
-                selectedColor: secondryColor,
-                selectedShadowColor: secondryColor,
-                onSelected: (check) {
-                  setState(() async {
+                  labelStyle: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff707070)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(153),
+                  ),
+                  selected: false,
+                  selectedColor: secondryColor,
+                  selectedShadowColor: secondryColor,
+                  onSelected: (check) async {
                     DateTime? date = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
@@ -409,85 +406,75 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         initialDate = date;
                       }
                     });
-
-                    // priceBools =
-                    //     priceBools.map<bool>((v) => false).toList();
-                    // priceBools[index] = check;
-                  });
-                },
-                checkmarkColor: primaryColor,
-                pressElevation: 3,
-                deleteIcon: Icon(
-                  Icons.close,
-                  size: 15,
-                ),
-              ),
-              FilterChip(
-                backgroundColor: backgroundColor,
-                label: Container(
-                  height: 20,
-                  width: screen_width * 0.38, // or a fixed value like 100
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      Text(
-                        "${finalDate.day}/${finalDate.month}/${finalDate.year}",
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xff707070),
-                        ),
-                      ),
-                    ],
+                  },
+                  checkmarkColor: primaryColor,
+                  pressElevation: 3,
+                  deleteIcon: Icon(
+                    Icons.close,
+                    size: 15,
                   ),
                 ),
-                labelStyle: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff707070)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(153),
-                ),
-                selected: false,
-                selectedColor: secondryColor,
-                selectedShadowColor: secondryColor,
-                onSelected: (check) async {
-                  DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(Duration(days: 30)),
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: ThemeData.light().copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: primaryColor,
-                            onPrimary: Colors.white,
-                            onSurface: Colors.black,
+                FilterChip(
+                  backgroundColor: backgroundColor,
+                  label: Container(
+                    height: 20,
+                    width: screen_width * 0.38,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${finalDate.day}/${finalDate.month}/${finalDate.year}",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff707070),
+                      ),
+                    ),
+                  ),
+                  labelStyle: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff707070)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(153),
+                  ),
+                  selected: false,
+                  selectedColor: secondryColor,
+                  selectedShadowColor: secondryColor,
+                  onSelected: (check) async {
+                    DateTime? date = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(Duration(days: 30)),
+                      builder: (BuildContext context, Widget? child) {
+                        return Theme(
+                          data: ThemeData.light().copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: primaryColor,
+                              onPrimary: Colors.white,
+                              onSurface: Colors.black,
+                            ),
+                            dialogBackgroundColor: Colors.white,
+                            textTheme: TextTheme(
+                              displayLarge: GoogleFonts.poppins(),
+                              displayMedium: GoogleFonts.poppins(),
+                              displaySmall: GoogleFonts.poppins(),
+                              headlineLarge: GoogleFonts.poppins(),
+                              headlineMedium: GoogleFonts.poppins(),
+                              headlineSmall: GoogleFonts.poppins(),
+                              titleLarge: GoogleFonts.poppins(),
+                              titleMedium: GoogleFonts.poppins(),
+                              titleSmall: GoogleFonts.poppins(),
+                              bodyLarge: GoogleFonts.poppins(),
+                              bodyMedium: GoogleFonts.poppins(),
+                              bodySmall: GoogleFonts.poppins(),
+                            ),
                           ),
-                          dialogBackgroundColor: Colors.white,
-                          textTheme: TextTheme(
-                            displayLarge: GoogleFonts.poppins(),
-                            displayMedium: GoogleFonts.poppins(),
-                            displaySmall: GoogleFonts.poppins(),
-                            headlineLarge: GoogleFonts.poppins(),
-                            headlineMedium: GoogleFonts.poppins(),
-                            headlineSmall: GoogleFonts.poppins(),
-                            titleLarge: GoogleFonts.poppins(),
-                            titleMedium: GoogleFonts.poppins(),
-                            titleSmall: GoogleFonts.poppins(),
-                            bodyLarge: GoogleFonts.poppins(),
-                            bodyMedium: GoogleFonts.poppins(),
-                            bodySmall: GoogleFonts.poppins(),
-                          ),
-                        ),
-                        child: child!,
-                      );
-                    },
-                  );
-
+                          child: child!,
+                        );
+                      },
+                    );
                     setState(() {
                       if (date != null) {
                         finalDate = date;
@@ -544,7 +531,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

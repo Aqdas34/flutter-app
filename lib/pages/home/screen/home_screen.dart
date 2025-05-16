@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen>
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchFocused = false;
+  int _currentIndex = 0;
   final List<Map<String, dynamic>> _cuisines = [
     {
       'name': 'Pakistani',
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
       'cuisineImage': 'assets/pakistani1.png',
     },
     {
-      'name': 'Chineese',
+      'name': 'Chinese',
       'color': Color(0xFF81C0FF),
       'image': 'assets/chinese_logo.png',
       'cuisineImage': 'assets/chinese1.png',
@@ -115,6 +116,29 @@ class _HomeScreenState extends State<HomeScreen>
         }).toList();
       }
     });
+  }
+
+  void _onNavItemTapped(int index) {
+    if (index == _currentIndex) return;
+
+    setState(() {
+      _currentIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        // Already on home
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/appointments');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/messages');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/profile-settings');
+        break;
+    }
   }
 
   @override
@@ -408,7 +432,10 @@ class _HomeScreenState extends State<HomeScreen>
                 duration: Duration(milliseconds: 200),
                 child: _isSearchFocused
                     ? SizedBox.shrink()
-                    : CustomNavigationBar(),
+                    : CustomNavigationBar(
+                        currentIndex: _currentIndex,
+                        onTap: _onNavItemTapped,
+                      ),
               ),
             )
           ],

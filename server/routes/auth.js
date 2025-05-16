@@ -1,11 +1,9 @@
-
-
 const express = require("express");
 const User = require("../models/user");
 const Chef = require("../models/chef");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
-const auth = require("../middleware/auth");
+const { verifyToken } = require("../middleware/auth");
 const authRouter = express.Router();
 
 authRouter.post("/api/signup", async (req, res) => {
@@ -74,13 +72,14 @@ authRouter.post("/tokenIsValid", async (req, res) => {
 
 
 
-authRouter.get('/', auth, async (req, res) => {
+authRouter.get('/', verifyToken, async (req, res) => {
     const user = await User.findById(req.user);
     res.json({ ...user._doc, token: req.token });
 
+
 });
 
-authRouter.post('/api/becomeChef', auth,async (req, res) => {
+authRouter.post('/api/becomeChef', verifyToken,async (req, res) => {
   try {
       const { ChefID } = req.body;
       console.log("ChefID",  req.user._id);
@@ -118,11 +117,110 @@ authRouter.post('/api/becomeChef', auth,async (req, res) => {
   }
 });
 
+authRouter.put('/api/updateProfile', verifyToken, async (req, res) => {
+    try {
+        const { name, address, profileImage } = req.body;
+        
+        // Find the user
+        const user = await User.findById(req.user);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
+        // Create an update object with only the provided fields
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (address !== undefined) updateData.address = address;
+        if (profileImage !== undefined) updateData.profileImage = profileImage;
 
+        // Update the user with only the provided fields
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user,
+            { $set: updateData },
+            { new: true } // Return the updated document
+        );
+        
+        // Return the updated user data
+        res.json({ 
+            message: 'Profile updated successfully',
+            user: {
+                id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                address: updatedUser.address,
+                profileImage: updatedUser.profileImage,
+                type: updatedUser.type,
+                isVerified: updatedUser.isVerified
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
+authRouter.put('/api/changePassword', verifyToken, async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        
+        // Validate required field
+        if (!newPassword) {
+            return res.status(400).json({ message: 'New password is required' });
+        }
 
+        // Find the user
+        const user = await User.findById(req.user);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the password
+        user.password = hashedPassword;
+        await user.save();
+        
+        res.json({ 
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+authRouter.get("/api/getUserID", async (req, res) => {
+    try {
+        const { email } = req.query;
+        
+        if (!email) {
+            return res.status(400).json({ error: "Email is required" });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json({ userId: user._id });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+authRouter.get("/api/checkEmail", async (req, res) => {
+    try {
+        const { email } = req.query;
+        
+        if (!email) {
+            return res.status(400).json({ error: "Email is required" });
+        }
+
+        const user = await User.findOne({ email });
+        res.json({ exists: !!user });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // authRouter.get("/api/users", async (req, res) => {
 //     try {

@@ -20,6 +20,13 @@ void httpErrorHandling({
       showError(context, jsonDecode(response.body)['error']);
       break;
     default:
-      showError(context, jsonDecode(response.body));
+      final decodedBody = jsonDecode(response.body);
+      showError(
+          context,
+          decodedBody is Map
+              ? decodedBody['message'] ??
+                  decodedBody['error'] ??
+                  'An error occurred'
+              : decodedBody.toString());
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:only_shef/pages/chef/screens/chef_home_screen.dart';
+import 'package:only_shef/pages/chef/home/screens/chef_home_screen.dart';
 import 'package:only_shef/pages/chef_appointments/screens/chef_appointments.dart';
 import 'package:only_shef/pages/chat/screen/messages_screen.dart';
 import 'package:only_shef/pages/profile_setting/screen/profile_setting.dart';
@@ -75,4 +75,4 @@ class _ChefNavigationBarState extends State<ChefNavigationBar> {
       ),
     );
   }
-} 
+}

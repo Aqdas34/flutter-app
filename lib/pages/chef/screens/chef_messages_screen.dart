@@ -27,56 +27,66 @@ class _ChefMessagesScreenState extends State<ChefMessagesScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.message_outlined,
-              size: 80,
-              color: Color(0xFF1E451B),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.message_outlined,
+                  size: 80,
+                  color: Color(0xFF1E451B),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'No Messages Yet',
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF333333),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Your customer messages will appear here',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Color(0xFF707070),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            Text(
-              'No Messages Yet',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF333333),
-              ),
+          ),
+          Positioned(
+            bottom: 10,
+            left: 50,
+            right: 50,
+            child: ChefNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+                switch (index) {
+                  case 0:
+                    Navigator.pushReplacementNamed(context, '/chef-home');
+                    break;
+                  case 1:
+                    Navigator.pushReplacementNamed(
+                        context, '/chef-appointments');
+                    break;
+                  case 2:
+                    // Already on messages screen
+                    break;
+                  case 3:
+                    Navigator.pushReplacementNamed(context, '/profile-settings');
+                    break;
+                }
+              },
             ),
-            SizedBox(height: 8),
-            Text(
-              'Your customer messages will appear here',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Color(0xFF707070),
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: ChefNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, '/chef-home');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, '/chef-appointments');
-              break;
-            case 2:
-              // Already on messages screen
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, '/chef-profile');
-              break;
-          }
-        },
+          ),
+        ],
       ),
     );
   }

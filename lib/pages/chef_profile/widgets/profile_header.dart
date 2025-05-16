@@ -6,6 +6,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 
 import '../../../provider/user_provider.dart';
 import '../../chat/screen/chat_screen.dart';
+
 import '../../cuisine/models/chef.dart';
 import '../../send_offer/screens/send_offer_screen.dart';
 
@@ -383,49 +384,6 @@ class ProfileHeader extends StatelessWidget {
                         builder: (context) => FutureBuilder<String?>(
                           future: getCurrentUserId(context),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            if (snapshot.hasError) {
-                              return Scaffold(
-                                body: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.error_outline,
-                                          color: Colors.red, size: 48),
-                                      SizedBox(height: 16),
-                                      Text(
-                                        'Please login first to send messages',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 16,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      SizedBox(height: 24),
-                                      ElevatedButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: primaryColor,
-                                        ),
-                                        child: Text(
-                                          'Go Back',
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            if (!snapshot.hasData) {
-                              return const Center(
-                                  child: Text('Error loading user data'));
-                            }
                             return ChatScreen(
                               chef: chef,
                               currentUserId: snapshot.data!,

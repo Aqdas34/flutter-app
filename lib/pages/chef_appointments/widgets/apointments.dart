@@ -4,8 +4,11 @@ import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/pages/chef_appointments/screens/appointment_details_screen.dart';
 import 'package:only_shef/pages/chef_appointments/models/appointment.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../../provider/profile_state_provider.dart';
 import '../../chat/screen/chat_screen.dart';
+
 
 class AppointmentWidget extends StatelessWidget {
   final Appointment appointment;
@@ -17,6 +20,7 @@ class AppointmentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileState = Provider.of<ProfileStateProvider>(context);
     return Container(
       padding: const EdgeInsets.all(10),
       child: Stack(children: [
@@ -45,8 +49,8 @@ class AppointmentWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      appointment.chefInfo.specialties.isNotEmpty
-                          ? appointment.chefInfo.specialties.first
+                      appointment.userId.isNotEmpty
+                          ? appointment.userId['name']
                           : "Chef",
                       style: GoogleFonts.poppins(
                         fontSize: 13,
@@ -129,8 +133,9 @@ class AppointmentWidget extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ChatScreen(
-                                            chef: appointment.chef,
-                                            currentUserId: appointment.userId,
+                                            chef: appointment.chefInfo,
+                                            currentUserId:
+                                                appointment.userId['_id'] ?? '',
                                           )));
                             },
                             child: Container(
@@ -193,6 +198,10 @@ class AppointmentWidget extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => AppointmentDetailsScreen(
                     appointment: appointment,
+                    isFromPending: profileState.isChefProfile &&
+                        appointment.status.toLowerCase().contains('pending'),
+                    isFromAccepted: profileState.isChefProfile &&
+                        appointment.status.toLowerCase().contains('accepted'),
                   ),
                 ),
               );

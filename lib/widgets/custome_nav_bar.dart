@@ -8,21 +8,26 @@ import 'package:only_shef/pages/profile_setting/screen/profile_setting.dart';
 // import 'package:only_shef/pages/settings/screens/profile_setting_screen.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({super.key});
+  final int currentIndex;
+  final Function(int) onTap;
+
+  const CustomNavigationBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int _selectedIndex = 0; // Tracks the selected navigation item
-
   // List of icons and corresponding screens
   final List<Map<String, dynamic>> _navItems = [
-    {'icon': Icons.home, 'screen': HomeScreen()},
-    {'icon': Icons.settings, 'screen': ChefAppointments()},
-    {'icon': Icons.message, 'screen': MessagesScreen()},
-    {'icon': Icons.person, 'screen': ProfileSettingsScreen()},
+    {'icon': Icons.home, 'label': 'Home'},
+    {'icon': Icons.calendar_today, 'label': 'Appointments'},
+    {'icon': Icons.message, 'label': 'Messages'},
+    {'icon': Icons.person, 'label': 'Profile'},
   ];
 
   @override
@@ -46,24 +51,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   }
 
   Widget _buildNavItem(int index) {
-    bool isSelected = index == _selectedIndex;
+    bool isSelected = index == widget.currentIndex;
 
     return GestureDetector(
       onTap: () {
-        if (_selectedIndex == index) {
-          return; // Do nothing if the selected index is the same as the current index
-        }
-        setState(() {
-          _selectedIndex = index; // Update the selected index
-        });
-
-        // Navigate to the corresponding screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _navItems[index]['screen'],
-          ),
-        );
+        widget.onTap(index);
       },
       child: Container(
         height: 55,

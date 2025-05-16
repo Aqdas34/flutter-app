@@ -29,7 +29,7 @@ class MessageItemWidget extends StatelessWidget {
           // Profile Picture
           CircleAvatar(
             radius: 25,
-            backgroundImage: AssetImage(profilePicture),
+            backgroundImage: NetworkImage(profilePicture),
           ),
           const SizedBox(width: 15),
 

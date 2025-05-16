@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const auth = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   try {
     const token = req.header("x-auth-token");
     if (!token)
@@ -10,6 +10,7 @@ const auth = async (req, res, next) => {
     if (!verified)
       return res
         .status(401)
+        
         .json({ msg: "Token verification failed, authorization denied." });
 
     req.user = verified.id;
@@ -20,4 +21,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-module.exports = auth;
+module.exports = { verifyToken };

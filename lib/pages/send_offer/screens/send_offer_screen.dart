@@ -3,12 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:only_shef/common/colors/colors.dart';
 import 'package:only_shef/main.dart';
+import 'package:provider/provider.dart';
 
+import '../../../common/constants/show_snack_bar.dart';
+import '../../../provider/user_provider.dart';
 import '../../chat/screen/chat_screen.dart';
+
 import '../../cuisine/models/chef.dart';
 import '../../cuisine/models/cuisines.dart';
 import '../../cuisine/services/chef_gig_services.dart';
 import '../models/offer.dart';
+import '../services/send_offer_services.dart';
 
 class SendOfferScreen extends StatefulWidget {
   final String chefId;
@@ -30,6 +35,7 @@ class SendOfferScreen extends StatefulWidget {
 
 class _SendOfferScreenState extends State<SendOfferScreen> {
   TimeOfDay? selectedTime;
+  String? userId;
   List<Cuisine> chefCuisines = [];
   String? selectedCuisineId; // Only one selection
   int numberOfPersons = 1;
@@ -120,19 +126,21 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
     });
   }
 
-  void _sendOffer() {
+  void _sendOffer(BuildContext context) async {
+    // final user = Provider.of<UserProvider>(context).user;
     if (selectedTime == null || selectedCuisineId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select time and a cuisine.')),
       );
       return;
     }
+    showSnackBar(context, 'Sending offer...');
     final selectedCuisine =
         chefCuisines.firstWhere((c) => c.id == selectedCuisineId);
     final offer = Offer(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       chefId: widget.chefId,
-      userId: 'current_user_id', // TODO: Get from auth service
+      userId: userId!,
       date: widget.selectedDate,
       time: selectedTime!.format(context),
       selectedCuisines: [selectedCuisine.name],
@@ -140,20 +148,27 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
       comments: commentsController.text,
     );
     print('Offer to return: \\${offer.toJson()}');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          chef: widget.chef,
-          currentUserId: "123",
-          initialOffer: offer,
-        ),
-      ),
+    // Call the bookChef service
+    final success = await SendOfferServices().bookChef(
+      context: context,
+      chefId: widget.chefId,
+      date: DateFormat('yyyy-MM-dd').format(widget.selectedDate),
+      time: selectedTime!.format(context),
+      selectedCuisines: [selectedCuisine.name],
+      numberOfPersons: numberOfPersons,
+      price: selectedCuisine.price * numberOfPersons,
+      comments: commentsController.text,
     );
+
+    if (success) {
+      Navigator.pop(context, offer);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
+    userId = user.id;
     return Scaffold(
       backgroundColor: backgroundColor,
       body: isLoading
@@ -179,7 +194,7 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                                   MaterialPageRoute(
                                       builder: (context) => ChatScreen(
                                             chef: widget.chef,
-                                            currentUserId: "123",
+                                            currentUserId: user.id,
                                           )));
                             }
                             Navigator.pop(context);
@@ -503,7 +518,7 @@ class _SendOfferScreenState extends State<SendOfferScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _sendOffer,
+                        onPressed: () => _sendOffer(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           padding: const EdgeInsets.symmetric(vertical: 18),

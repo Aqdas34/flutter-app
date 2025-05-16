@@ -89,7 +89,7 @@ class ChefAppointmentServices {
               .map((json) => Appointment.fromJson(json))
               .toList();
 
-          print(appointments[0].chef.profileImage);
+          print(appointments[0].chefInfo.profileImage);
 
           // Parse grouped appointments
           final Map<String, List<Appointment>> grouped = {
@@ -120,7 +120,7 @@ class ChefAppointmentServices {
             total: jsonData['total'] ?? 0,
             stats: stats,
           );
-          print(appointmentResponse.appointments[0].chef.profileImage);
+          print(appointmentResponse.appointments[0].chefInfo.profileImage);
         },
       );
     } catch (e) {

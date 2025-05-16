@@ -2,9 +2,9 @@ import 'package:only_shef/pages/cuisine/models/chef.dart';
 
 class Appointment {
   final String id;
-  final Chef chef;
+  final String chefId;
   final Chef chefInfo;
-  final String userId;
+  final Map<String, dynamic> userId;
   final DateTime date;
   final String time;
   final List<String> selectedCuisines;
@@ -17,7 +17,7 @@ class Appointment {
 
   Appointment({
     required this.id,
-    required this.chef,
+    required this.chefId,
     required this.chefInfo,
     required this.userId,
     required this.date,
@@ -34,9 +34,9 @@ class Appointment {
   factory Appointment.fromJson(Map<String, dynamic> json) {
     return Appointment(
       id: json['_id'] ?? '',
-      chef: Chef.fromJson(json['chefId'] ?? {}),
+      chefId: json['chefId'] ?? '',
       chefInfo: Chef.fromJson(json['chefInfo'] ?? {}),
-      userId: json['userId'] ?? '',
+      userId: json['userId'] ?? {},
       date: DateTime.parse(json['date'] ?? DateTime.now().toIso8601String()),
       time: json['time'] ?? '',
       selectedCuisines: List<String>.from(json['selectedCuisines'] ?? []),
