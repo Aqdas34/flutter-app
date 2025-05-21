@@ -20,8 +20,7 @@ ENV PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PATH}"
 # Enable web support
 RUN flutter config --enable-web
 
-# Run Flutter doctor to preload dependencies
-RUN flutter doctor
+
 
 # Set app dir
 WORKDIR /app
