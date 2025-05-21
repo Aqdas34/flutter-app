@@ -51,7 +51,7 @@ class ChefProfileScreen extends StatelessWidget {
                 color: Colors.white,
                 child: Theme(
                   data: ThemeData(
-                    tabBarTheme: TabBarTheme(
+                    tabBarTheme: TabBarThemeData(
                       dividerColor: Colors
                           .transparent, // Removes the grey line under TabBar
                     ),

@@ -1,7 +1,8 @@
 build
 .dart_tool
-.flutter-plugins
-.packages
-.pub-cache
-.idea
 .git
+.gitignore
+.packages
+.pub
+flutter_assets
+.idea

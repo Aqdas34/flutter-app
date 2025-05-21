@@ -1,0 +1,2 @@
+D:/FYP/external_evalution/only_chef/android/app/.cxx/Debug/4j1r402a/x86_64/CMakeFiles/edit_cache.dir
+D:/FYP/external_evalution/only_chef/android/app/.cxx/Debug/4j1r402a/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,43 +1,52 @@
-# Step 1: Use the official Dart image as the base image
-FROM dart:stable AS build
+# Base image with tools
+FROM ubuntu:22.04 AS build
 
-# Step 2: Set working directory
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  curl git unzip xz-utils zip libglu1-mesa wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# Set Flutter version
+ENV FLUTTER_VERSION=3.19.0
+ENV FLUTTER_HOME=/flutter
+
+# Download Flutter SDK
+RUN git clone --depth=1 https://github.com/flutter/flutter.git -b stable $FLUTTER_HOME
+
+
+# Export path
+ENV PATH="${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin:${PATH}"
+
+# Enable web support
+RUN flutter config --enable-web
+
+# Run Flutter doctor to preload dependencies
+RUN flutter doctor
+
+# Set app dir
 WORKDIR /app
 
-# Step 3: Install required dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    wget \
-    unzip \
-    curl \
-    && apt-get clean
-
-# Step 4: Install Flutter
-RUN git clone https://github.com/flutter/flutter.git /flutter
-ENV PATH="/flutter/bin:${PATH}"
-
-# Step 5: Enable Flutter web support
-RUN flutter channel stable \
-    && flutter upgrade \
-    && flutter config --enable-web
-
-# Step 6: Copy the Flutter project files into the container
-COPY . .
-
-# Step 7: Get the Flutter dependencies
+# Copy pubspec first to cache dependencies
+COPY pubspec.* ./
 RUN flutter pub get
 
-# Step 8: Build the Flutter web project
-RUN flutter build web
+# Copy the rest of the project
+COPY . .
 
-# Step 9: Use Nginx to serve the built app
+# Build web with verbose output
+RUN flutter build web --verbose || (echo "Flutter build failed" && exit 1)
+
+
+# Stage 2: NGINX server
 FROM nginx:alpine
 
-# Step 10: Copy the build output to Nginx's html directory
+# Remove default nginx content
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy Flutter web build
 COPY --from=build /app/build/web /usr/share/nginx/html
 
-# Step 11: Expose the default HTTP port
+# Expose port
 EXPOSE 80
 
-# Step 12: Start the Nginx server
 CMD ["nginx", "-g", "daemon off;"]
